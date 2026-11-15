@@ -9,3 +9,7 @@ next-env.d.ts
 service-account*.json
 *.zip
 .history
+
+.vercel
+.env*
+!.env.example
