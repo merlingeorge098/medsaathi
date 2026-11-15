@@ -16,11 +16,23 @@ const PILL_COLORS: Record<string, string> = {
 };
 
 /** A drawn tablet, so elders recognise medicines by look. Decorative: the name is always shown beside it. */
-export function PillArt({ shape = "Round", color = "White", size = 64 }: { shape?: string; color?: string; size?: number }) {
+export function PillArt({
+  shape = "Round",
+  color = "White",
+  size = 64,
+}: {
+  shape?: string;
+  color?: string;
+  size?: number;
+}) {
   const fill = PILL_COLORS[color.toLowerCase()] ?? "#f7f7f2";
   const s = shape.toLowerCase();
   return (
-    <div className="flex shrink-0 items-center justify-center rounded-2xl bg-surface-high" style={{ width: size, height: size }} aria-hidden="true">
+    <div
+      className="flex shrink-0 items-center justify-center rounded-2xl bg-surface-high"
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
       <svg viewBox="0 0 64 64" width={size * 0.7} height={size * 0.7}>
         {s === "capsule" ? (
           <g transform="rotate(-30 32 32)">
@@ -42,18 +54,32 @@ export function PillArt({ shape = "Round", color = "White", size = 64 }: { shape
 
 const STATUS: Record<DoseDisplayStatus, { label: string; className: string; icon: ReactNode }> = {
   taken: { label: "Taken", className: "bg-taken-soft text-taken", icon: <Check className="h-4 w-4" aria-hidden /> },
-  skipped: { label: "Skipped", className: "bg-missed-soft text-missed", icon: <MinusCircle className="h-4 w-4" aria-hidden /> },
-  missed: { label: "Missed", className: "bg-missed-soft text-missed", icon: <AlertCircle className="h-4 w-4" aria-hidden /> },
+  skipped: {
+    label: "Skipped",
+    className: "bg-missed-soft text-missed",
+    icon: <MinusCircle className="h-4 w-4" aria-hidden />,
+  },
+  missed: {
+    label: "Missed",
+    className: "bg-missed-soft text-missed",
+    icon: <AlertCircle className="h-4 w-4" aria-hidden />,
+  },
   due: { label: "Due", className: "bg-due-soft text-due", icon: <Clock className="h-4 w-4" aria-hidden /> },
   snoozed: { label: "Snoozed", className: "bg-due-soft text-due", icon: <MoonStar className="h-4 w-4" aria-hidden /> },
-  upcoming: { label: "Later", className: "bg-surface-high text-muted", icon: <Clock className="h-4 w-4" aria-hidden /> },
+  upcoming: {
+    label: "Later",
+    className: "bg-surface-high text-muted",
+    icon: <Clock className="h-4 w-4" aria-hidden />,
+  },
 };
 
 /** Status is always shown with an icon and a word, never colour alone. */
 export function StatusBadge({ status, detail }: { status: DoseDisplayStatus; detail?: string }) {
   const s = STATUS[status];
   return (
-    <span className={clsx("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold", s.className)}>
+    <span
+      className={clsx("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold", s.className)}
+    >
       {s.icon}
       {s.label}
       {detail ? <span className="font-normal">{detail}</span> : null}
@@ -61,7 +87,15 @@ export function StatusBadge({ status, detail }: { status: DoseDisplayStatus; det
   );
 }
 
-export function Avatar({ name, size = "md", tone = "teal" }: { name: string; size?: "sm" | "md" | "lg"; tone?: "teal" | "clay" }) {
+export function Avatar({
+  name,
+  size = "md",
+  tone = "teal",
+}: {
+  name: string;
+  size?: "sm" | "md" | "lg";
+  tone?: "teal" | "clay";
+}) {
   return (
     <span
       aria-hidden="true"
@@ -87,7 +121,13 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
   );
 }
 
-export function Notice({ tone = "info", children }: { tone?: "info" | "success" | "warn" | "error"; children: ReactNode }) {
+export function Notice({
+  tone = "info",
+  children,
+}: {
+  tone?: "info" | "success" | "warn" | "error";
+  children: ReactNode;
+}) {
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
@@ -104,7 +144,17 @@ export function Notice({ tone = "info", children }: { tone?: "info" | "success" 
   );
 }
 
-export function PageHeader({ eyebrow, title, subtitle, actions }: { eyebrow?: string; title: string; subtitle?: string; actions?: ReactNode }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  subtitle,
+  actions,
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  actions?: ReactNode;
+}) {
   return (
     <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>

@@ -40,7 +40,8 @@ const LATE_AFTER_MIN = 60;
 function outcome(dose: ScheduledDose, now: Date): CellStatus | "pending" {
   const log = dose.log;
   if (log?.status === "taken" && log.actedAt) {
-    const late = (new Date(log.actedAt).getTime() - istInstant(dose.date, dose.time).getTime()) / 60000 > LATE_AFTER_MIN;
+    const late =
+      (new Date(log.actedAt).getTime() - istInstant(dose.date, dose.time).getTime()) / 60000 > LATE_AFTER_MIN;
     return late ? "late" : "taken";
   }
   if (log?.status === "skipped") return "missed";
@@ -57,7 +58,14 @@ export interface AdherenceReport {
   late: number;
   missed: number;
   onTimePct: number;
-  perMedication: { medication: Medication; total: number; onTime: number; late: number; missed: number; topReason?: SkipReason }[];
+  perMedication: {
+    medication: Medication;
+    total: number;
+    onTime: number;
+    late: number;
+    missed: number;
+    topReason?: SkipReason;
+  }[];
   reasons: Partial<Record<SkipReason, number>>;
   missedBySlot: Record<string, number>;
   patterns: string[];
@@ -71,7 +79,13 @@ export const REASON_LABEL: Record<SkipReason, string> = {
   other: "other reason",
 };
 
-export function buildAdherence(meds: Medication[], logs: DoseLog[], endDate: string, days: number, now: Date): AdherenceReport {
+export function buildAdherence(
+  meds: Medication[],
+  logs: DoseLog[],
+  endDate: string,
+  days: number,
+  now: Date,
+): AdherenceReport {
   const report: AdherenceReport = {
     days: [],
     total: 0,
@@ -97,8 +111,14 @@ export function buildAdherence(meds: Medication[], logs: DoseLog[], endDate: str
       const med = report.perMedication.find((m) => m.medication.id === dose.medication.id);
       report.total++;
       if (med) med.total++;
-      if (result === "taken") { report.onTime++; if (med) med.onTime++; }
-      if (result === "late") { report.late++; if (med) med.late++; }
+      if (result === "taken") {
+        report.onTime++;
+        if (med) med.onTime++;
+      }
+      if (result === "late") {
+        report.late++;
+        if (med) med.late++;
+      }
       if (result === "missed") {
         report.missed++;
         if (med) med.missed++;
@@ -131,10 +151,15 @@ function describePatterns(r: AdherenceReport): string[] {
     out.push(`${worstSlot[0]} doses are missed most often (${worstSlot[1]} of ${r.missed} missed doses).`);
   }
   const topReason = Object.entries(r.reasons).sort((a, b) => b[1] - a[1])[0];
-  if (topReason) out.push(`Most common reason for skipping: ${REASON_LABEL[topReason[0] as SkipReason]} (${topReason[1]} times).`);
-  const worstMed = [...r.perMedication].filter((m) => m.total > 0).sort((a, b) => b.missed / b.total - a.missed / a.total)[0];
+  if (topReason)
+    out.push(`Most common reason for skipping: ${REASON_LABEL[topReason[0] as SkipReason]} (${topReason[1]} times).`);
+  const worstMed = [...r.perMedication]
+    .filter((m) => m.total > 0)
+    .sort((a, b) => b.missed / b.total - a.missed / a.total)[0];
   if (worstMed && worstMed.missed > 0) {
-    out.push(`${worstMed.medication.name} has the lowest adherence (${Math.round(((worstMed.total - worstMed.missed) / worstMed.total) * 100)}% taken).`);
+    out.push(
+      `${worstMed.medication.name} has the lowest adherence (${Math.round(((worstMed.total - worstMed.missed) / worstMed.total) * 100)}% taken).`,
+    );
   }
   if (r.late > 0) out.push(`${r.late} doses were taken more than an hour late.`);
   if (out.length === 0) out.push("No worrying patterns. Doses are being taken on time.");

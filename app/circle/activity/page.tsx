@@ -28,10 +28,22 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <PageHeader eyebrow="Activity" title="Everything that changed" subtitle="Every change shows who made it. Nothing happens behind anyone's back." />
+      <PageHeader
+        eyebrow="Activity"
+        title="Everything that changed"
+        subtitle="Every change shows who made it. Nothing happens behind anyone's back."
+      />
       <nav aria-label="Filter activity" className="mb-6 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
-          <Link key={f.key} href={f.key === "all" ? "/circle/activity" : `/circle/activity?type=${f.key}`} aria-current={type === f.key ? "page" : undefined} className={clsx("rounded-full border px-4 py-2 text-base", type === f.key ? "border-primary-soft bg-primary-soft text-white" : "border-line bg-card")}>
+          <Link
+            key={f.key}
+            href={f.key === "all" ? "/circle/activity" : `/circle/activity?type=${f.key}`}
+            aria-current={type === f.key ? "page" : undefined}
+            className={clsx(
+              "rounded-full border px-4 py-2 text-base",
+              type === f.key ? "border-primary-soft bg-primary-soft text-white" : "border-line bg-card",
+            )}
+          >
             {f.label}
           </Link>
         ))}
@@ -44,7 +56,10 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
             {list.map((a) => (
               <li key={a.id} className="flex gap-3 p-4">
                 <Avatar name={a.actor} size="sm" tone={a.actor === data.profile.name ? "teal" : "clay"} />
-                <p className="text-base">{a.text}<span className="block text-sm text-muted">{relativeTime(a.at)}</span></p>
+                <p className="text-base">
+                  {a.text}
+                  <span className="block text-sm text-muted">{relativeTime(a.at)}</span>
+                </p>
               </li>
             ))}
           </ul>

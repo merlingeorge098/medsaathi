@@ -12,13 +12,27 @@ export interface DoseRef {
 }
 
 /** Records a dose outcome. Shared by the in-app buttons and the one-tap email links. */
-export async function applyDoseAction(profileId: string, actorId: string, actorName: string, ref: DoseRef, action: "taken" | "snooze" | "skip", reason?: SkipReason) {
+export async function applyDoseAction(
+  profileId: string,
+  actorId: string,
+  actorName: string,
+  ref: DoseRef,
+  action: "taken" | "snooze" | "skip",
+  reason?: SkipReason,
+) {
   const store = await db();
   const med = await store.get("medications", ref.medicationId);
   if (!med || med.profileId !== profileId) throw new Error("Medicine not found");
   const id = `${ref.medicationId}_${ref.date}_${ref.time}`;
   const existing = await store.get("doseLogs", id);
-  const log: DoseLog = existing ?? { id, profileId, medicationId: med.id, date: ref.date, time: ref.time, notified: {} };
+  const log: DoseLog = existing ?? {
+    id,
+    profileId,
+    medicationId: med.id,
+    date: ref.date,
+    time: ref.time,
+    notified: {},
+  };
   if (log.status === "taken" && action !== "taken") return log;
   const now = new Date();
 
@@ -27,9 +41,19 @@ export async function applyDoseAction(profileId: string, actorId: string, actorN
       med.stock = Math.max(0, med.stock - med.dosePerTime);
       await store.put("medications", med);
     }
-    Object.assign(log, { status: "taken", actedAt: now.toISOString(), actedBy: actorId, reason: undefined, snoozeUntil: undefined });
+    Object.assign(log, {
+      status: "taken",
+      actedAt: now.toISOString(),
+      actedBy: actorId,
+      reason: undefined,
+      snoozeUntil: undefined,
+    });
   } else if (action === "snooze") {
-    Object.assign(log, { status: "snoozed", snoozeUntil: new Date(now.getTime() + 15 * 60000).toISOString(), actedBy: actorId });
+    Object.assign(log, {
+      status: "snoozed",
+      snoozeUntil: new Date(now.getTime() + 15 * 60000).toISOString(),
+      actedBy: actorId,
+    });
     // Restart the ladder from the new time.
     log.notified = { ...log.notified, headsUp: true, due: false };
   } else {
@@ -48,4 +72,3 @@ export async function applyDoseAction(profileId: string, actorId: string, actorN
   await logActivity(profileId, actorName, "dose", text);
   return log;
 }
-

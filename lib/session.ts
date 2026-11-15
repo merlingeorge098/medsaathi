@@ -17,7 +17,11 @@ function secret(): Uint8Array {
 }
 
 export async function signToken(payload: Record<string, unknown>, expiresIn: string): Promise<string> {
-  return new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime(expiresIn).sign(secret());
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expiresIn)
+    .sign(secret());
 }
 
 export async function verifyToken<T>(token: string): Promise<T | null> {

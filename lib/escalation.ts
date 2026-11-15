@@ -40,7 +40,8 @@ export function pendingSteps(dose: DoseState, settings: EscalationSettings, now:
   if (minsPast > STALE_AFTER_MIN) return [];
 
   const steps: EscalationStep[] = [];
-  if (settings.headsUpMin > 0 && minsPast >= -settings.headsUpMin && minsPast < 0 && !notified.headsUp) steps.push("headsUp");
+  if (settings.headsUpMin > 0 && minsPast >= -settings.headsUpMin && minsPast < 0 && !notified.headsUp)
+    steps.push("headsUp");
   if (minsPast >= 0 && !notified.due) steps.push("due");
   if (minsPast >= settings.primaryAfterMin && !notified.primary) steps.push("primary");
   if (minsPast >= settings.everyoneAfterMin && !notified.everyone) steps.push("everyone");
@@ -50,7 +51,11 @@ export function pendingSteps(dose: DoseState, settings: EscalationSettings, now:
 export type DoseDisplayStatus = "taken" | "skipped" | "missed" | "due" | "upcoming" | "snoozed";
 
 /** What the dashboard should show for a dose right now. A dose becomes "missed" after the primary threshold. */
-export function displayStatus(dose: DoseState, settings: Pick<EscalationSettings, "primaryAfterMin">, now: Date): DoseDisplayStatus {
+export function displayStatus(
+  dose: DoseState,
+  settings: Pick<EscalationSettings, "primaryAfterMin">,
+  now: Date,
+): DoseDisplayStatus {
   const status = dose.log?.status;
   if (status === "taken") return "taken";
   if (status === "skipped") return "skipped";

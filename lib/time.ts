@@ -60,7 +60,10 @@ export function formatTime(time: string): string {
   return `${h12}:${String(m).padStart(2, "0")} ${suffix}`;
 }
 
-export function formatDate(date: string | Date, opts: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" }): string {
+export function formatDate(
+  date: string | Date,
+  opts: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" },
+): string {
   const d = typeof date === "string" ? (date.length === 10 ? istInstant(date, "12:00") : new Date(date)) : date;
   return new Intl.DateTimeFormat("en-IN", { timeZone: TIME_ZONE, ...opts }).format(d);
 }

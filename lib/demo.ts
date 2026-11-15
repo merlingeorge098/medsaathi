@@ -62,7 +62,15 @@ export async function seedDemo(): Promise<void> {
   };
   await store.put("profiles", profile);
 
-  const member = (id: string, name: string, relation: string, role: Member["role"], email: string, phone: string, status: Member["status"] = "active"): Member => ({
+  const member = (
+    id: string,
+    name: string,
+    relation: string,
+    role: Member["role"],
+    email: string,
+    phone: string,
+    status: Member["status"] = "active",
+  ): Member => ({
     id,
     profileId: DEMO_PROFILE_ID,
     name,
@@ -82,11 +90,29 @@ export async function seedDemo(): Promise<void> {
     member("demo_m_priya", "Priya Joshi", "Daughter-in-law", "editor", "priya.demo@medsaathi.app", "+91 98200 77889"),
     member("demo_m_sunita", "Sunita Pawar", "Home nurse", "editor", "sunita.demo@medsaathi.app", "+91 98200 22334"),
     member("demo_m_ankit", "Ankit Joshi", "Grandson", "viewer", "ankit.demo@medsaathi.app", "+91 98200 99001"),
-    member("demo_m_mehta", "Dr. Mehta's Clinic", "Clinic", "viewer", "clinic.demo@medsaathi.app", "+91 22 2765 1100", "pending"),
+    member(
+      "demo_m_mehta",
+      "Dr. Mehta's Clinic",
+      "Clinic",
+      "viewer",
+      "clinic.demo@medsaathi.app",
+      "+91 22 2765 1100",
+      "pending",
+    ),
   ];
   for (const m of members) await store.put("members", m);
 
-  const med = (id: string, name: string, strength: string, purpose: string, shape: string, color: string, pattern: string, times: string[], stock: number): Medication => ({
+  const med = (
+    id: string,
+    name: string,
+    strength: string,
+    purpose: string,
+    shape: string,
+    color: string,
+    pattern: string,
+    times: string[],
+    stock: number,
+  ): Medication => ({
     id,
     profileId: DEMO_PROFILE_ID,
     name,
@@ -125,7 +151,9 @@ export async function seedDemo(): Promise<void> {
         const id = doseId(m.id, date, time);
         let log: DoseLog;
         if (roll < missChance) {
-          const reasons: SkipReason[] = afternoon ? ["unwell", "unwell", "forgot", "side_effects"] : ["forgot", "unwell"];
+          const reasons: SkipReason[] = afternoon
+            ? ["unwell", "unwell", "forgot", "side_effects"]
+            : ["forgot", "unwell"];
           const skipped = rand() < 0.7;
           log = {
             id,
@@ -212,14 +240,36 @@ export async function seedDemo(): Promise<void> {
 
   const minsAgo = (m: number) => new Date(now.getTime() - m * 60000).toISOString();
   const activity: Omit<Activity, "id" | "profileId">[] = [
-    { actor: "Rahul Joshi", kind: "medicine", text: "Rahul asked to move Amlodipine from 2:00 PM to 9:00 PM. Waiting for Baba.", at: minsAgo(50) },
+    {
+      actor: "Rahul Joshi",
+      kind: "medicine",
+      text: "Rahul asked to move Amlodipine from 2:00 PM to 9:00 PM. Waiting for Baba.",
+      at: minsAgo(50),
+    },
     { actor: "Shantaram Joshi", kind: "checkin", text: "Baba checked in: feeling okay.", at: minsAgo(140) },
-    { actor: "Sunita Pawar", kind: "dose", text: "Sunita marked Metformin as taken on Baba's behalf.", at: minsAgo(200) },
+    {
+      actor: "Sunita Pawar",
+      kind: "dose",
+      text: "Sunita marked Metformin as taken on Baba's behalf.",
+      at: minsAgo(200),
+    },
     { actor: "Priya Joshi", kind: "appointment", text: "Priya will take Baba to Dr. Kulkarni.", at: minsAgo(60 * 20) },
-    { actor: "Priya Joshi", kind: "appointment", text: "Priya added a question for Dr. Kulkarni.", at: minsAgo(60 * 21) },
+    {
+      actor: "Priya Joshi",
+      kind: "appointment",
+      text: "Priya added a question for Dr. Kulkarni.",
+      at: minsAgo(60 * 21),
+    },
     { actor: "Shantaram Joshi", kind: "member", text: "Baba approved Sunita Pawar as Can edit.", at: minsAgo(60 * 48) },
   ];
-  for (const [i, a] of activity.entries()) await store.put("activity", { id: `demo_act_${i}`, profileId: DEMO_PROFILE_ID, ...a });
+  for (const [i, a] of activity.entries())
+    await store.put("activity", { id: `demo_act_${i}`, profileId: DEMO_PROFILE_ID, ...a });
 
-  await store.put("checkIns", { id: "demo_ci_today", profileId: DEMO_PROFILE_ID, mood: "okay", note: "Thoda thakan hai, baaki theek hai.", at: minsAgo(140) });
+  await store.put("checkIns", {
+    id: "demo_ci_today",
+    profileId: DEMO_PROFILE_ID,
+    mood: "okay",
+    note: "Thoda thakan hai, baaki theek hai.",
+    at: minsAgo(140),
+  });
 }

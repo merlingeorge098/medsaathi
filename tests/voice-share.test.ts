@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { doseSpeech, nextDoseSpeech } from "@/lib/voice";
+import { dailyUpdateText, whatsappLink } from "@/lib/share";
 
 describe("read-aloud when nothing is due", () => {
   it("announces the next dose", () => {
     const s = nextDoseSpeech("Baba", { medicine: "Atorvastatin", strength: "10 mg", time: "9:00 PM" });
-    expect(s.en).toBe("Baba ji, there is nothing to take right now. Your next medicine is Atorvastatin 10 mg, at 9:00 PM.");
+    expect(s.en).toBe(
+      "Baba ji, there is nothing to take right now. Your next medicine is Atorvastatin 10 mg, at 9:00 PM.",
+    );
     expect(s.hi).toContain("अगली दवा Atorvastatin 10 mg");
   });
 
@@ -13,19 +16,22 @@ describe("read-aloud when nothing is due", () => {
     expect(nextDoseSpeech("Baba").hi).toContain("शाबाश");
   });
 });
-import { dailyUpdateText, whatsappLink } from "@/lib/share";
 
 describe("read-aloud dose speech", () => {
   it("speaks the dose in English and Hindi", () => {
     const s = doseSpeech({ elderName: "Baba", medicine: "Amlodipine", strength: "5 mg", tablets: 1, food: "after" });
-    expect(s.en).toBe("Baba ji, it is time for your medicine. Please take 1 tablet of Amlodipine 5 mg after your meal, with a full glass of water.");
+    expect(s.en).toBe(
+      "Baba ji, it is time for your medicine. Please take 1 tablet of Amlodipine 5 mg after your meal, with a full glass of water.",
+    );
     expect(s.hi).toContain("Baba जी");
     expect(s.hi).toContain("Amlodipine 5 mg की 1 गोली");
     expect(s.hi).toContain("खाना खाने के बाद");
   });
 
   it("handles plural tablets, before food and no food rule", () => {
-    expect(doseSpeech({ elderName: "Aai", medicine: "Metformin", tablets: 2, food: "before" }).en).toContain("2 tablets of Metformin before your meal");
+    expect(doseSpeech({ elderName: "Aai", medicine: "Metformin", tablets: 2, food: "before" }).en).toContain(
+      "2 tablets of Metformin before your meal",
+    );
     const any = doseSpeech({ elderName: "Aai", medicine: "Vitamin D", tablets: 1, food: "any" });
     expect(any.en).not.toMatch(/meal/);
     expect(any.hi).not.toContain("खाना");

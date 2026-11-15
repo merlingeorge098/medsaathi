@@ -36,7 +36,9 @@ async function registerFailure(profile: Profile): Promise<string> {
     profile.failedAttempts = 0;
   }
   await store.put("profiles", profile);
-  return profile.lockedUntil ? `Too many tries. Please wait ${LOCK_MINUTES} minutes.` : "That code and passcode don't match.";
+  return profile.lockedUntil
+    ? `Too many tries. Please wait ${LOCK_MINUTES} minutes.`
+    : "That code and passcode don't match.";
 }
 
 function isLocked(profile: Profile): boolean {
@@ -46,7 +48,11 @@ function isLocked(profile: Profile): boolean {
 const loginSchema = z.object({ careCode: code, email: z.string().trim().toLowerCase().optional(), passcode: pin });
 
 export async function login(_: FormState, form: FormData): Promise<FormState> {
-  const parsed = loginSchema.safeParse({ careCode: form.get("careCode"), email: form.get("email") || undefined, passcode: form.get("passcode") });
+  const parsed = loginSchema.safeParse({
+    careCode: form.get("careCode"),
+    email: form.get("email") || undefined,
+    passcode: form.get("passcode"),
+  });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
   const { careCode, email, passcode } = parsed.data;
 
@@ -56,9 +62,13 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
 
   const store = await db();
   const members = await store.byProfile("members", profile.id);
-  const member = email ? members.find((m) => m.email === email && m.role !== "owner") : members.find((m) => m.role === "owner");
-  if (!member || !(await bcrypt.compare(passcode, member.passcodeHash))) return { error: await registerFailure(profile) };
-  if (member.status === "pending") return { error: `${profile.nickname || profile.name} hasn't approved you yet. Ask them to open MedSaathi.` };
+  const member = email
+    ? members.find((m) => m.email === email && m.role !== "owner")
+    : members.find((m) => m.role === "owner");
+  if (!member || !(await bcrypt.compare(passcode, member.passcodeHash)))
+    return { error: await registerFailure(profile) };
+  if (member.status === "pending")
+    return { error: `${profile.nickname || profile.name} hasn't approved you yet. Ask them to open MedSaathi.` };
   if (member.status === "declined") return { error: "This request was not approved." };
 
   profile.failedAttempts = 0;
@@ -72,7 +82,12 @@ export async function demoLogin(form: FormData): Promise<void> {
   await ensureDemo();
   const as = form.get("as") === "elder" ? "elder" : "family";
   if (as === "elder") {
-    await startSession({ profileId: DEMO_PROFILE_ID, memberId: DEMO_IDS.owner, role: "owner", name: "Shantaram Joshi" });
+    await startSession({
+      profileId: DEMO_PROFILE_ID,
+      memberId: DEMO_IDS.owner,
+      role: "owner",
+      name: "Shantaram Joshi",
+    });
     redirect("/elder");
   }
   await startSession({ profileId: DEMO_PROFILE_ID, memberId: DEMO_IDS.primary, role: "primary", name: "Rahul Joshi" });
@@ -102,7 +117,8 @@ export async function joinCircle(_: FormState, form: FormData): Promise<FormStat
 
   const store = await db();
   const members = await store.byProfile("members", profile.id);
-  if (members.some((m) => m.email === data.email)) return { error: "This email is already in the circle. Try logging in." };
+  if (members.some((m) => m.email === data.email))
+    return { error: "This email is already in the circle. Try logging in." };
 
   const member: Member = {
     id: newId("mem"),
@@ -130,14 +146,18 @@ const createSchema = z.object({
   elderPin: z.string().regex(/^\d{4}$/, "PIN is 4 digits"),
   helperName: z.string().trim().max(60).optional(),
   helperEmail: z.string().trim().toLowerCase().email().optional().or(z.literal("")),
-  helperPasscode: z.string().regex(/^\d{4,6}$/).optional().or(z.literal("")),
+  helperPasscode: z
+    .string()
+    .regex(/^\d{4,6}$/)
+    .optional()
+    .or(z.literal("")),
   helperRelation: z.string().trim().max(30).optional(),
 });
 
 async function uniqueCareCode(): Promise<string> {
   const store = await db();
   for (;;) {
-    const candidate = String(crypto.getRandomValues(new Uint32Array(1))[0]! % 900000 + 100000);
+    const candidate = String((crypto.getRandomValues(new Uint32Array(1))[0]! % 900000) + 100000);
     const clash = await store.findBy("profiles", "careCode", candidate);
     if (clash.length === 0) return candidate;
   }
@@ -169,7 +189,19 @@ export async function createProfile(_: FormState, form: FormData): Promise<FormS
     createdAt: now,
   };
   await store.put("profiles", profile);
-  const owner: Member = { id: newId("mem"), profileId: profile.id, name: d.elderName, email: "", phone: d.phone, relation: "Self", role: "owner", status: "active", alerts: true, passcodeHash: pinHash, createdAt: now };
+  const owner: Member = {
+    id: newId("mem"),
+    profileId: profile.id,
+    name: d.elderName,
+    email: "",
+    phone: d.phone,
+    relation: "Self",
+    role: "owner",
+    status: "active",
+    alerts: true,
+    passcodeHash: pinHash,
+    createdAt: now,
+  };
   await store.put("members", owner);
 
   let session = { profileId: profile.id, memberId: owner.id, role: owner.role, name: owner.name };

@@ -17,11 +17,18 @@ export default async function ElderLayout({ children }: { children: React.ReactN
           <HeartPulse className="h-6 w-6" aria-hidden /> MedSaathi
         </p>
         <form action={logout}>
-          <button className="btn-ghost px-3 py-2 text-base" aria-label={`Log out ${elderName(profile)}`}>Log out</button>
+          <button className="btn-ghost px-3 py-2 text-base" aria-label={`Log out ${elderName(profile)}`}>
+            Log out
+          </button>
         </form>
       </header>
-      <main id="main" className="flex-1 px-5 pb-32 pt-5">{children}</main>
-      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card pb-[env(safe-area-inset-bottom)]">
+      <main id="main" className="flex-1 px-5 pb-32 pt-5">
+        {children}
+      </main>
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card pb-[env(safe-area-inset-bottom)]"
+      >
         <ul className="mx-auto grid max-w-xl grid-cols-3">
           {[
             { href: "/elder", label: "Today", icon: Sun },
@@ -29,7 +36,10 @@ export default async function ElderLayout({ children }: { children: React.ReactN
             { href: "/elder/family", label: "My Family", icon: Users },
           ].map(({ href, label, icon: Icon }) => (
             <li key={href}>
-              <Link href={href} className="flex min-h-[72px] flex-col items-center justify-center gap-1 text-lg font-semibold text-primary-soft">
+              <Link
+                href={href}
+                className="flex min-h-[72px] flex-col items-center justify-center gap-1 text-lg font-semibold text-primary-soft"
+              >
                 <Icon className="h-7 w-7" aria-hidden />
                 {label}
               </Link>

@@ -10,7 +10,21 @@ import { Phone, Siren, Volume2, X } from "lucide-react";
  * It ignores repeat clicks while pending instead of using `disabled`: a disabled
  * submitter is dropped from the form data, which would lose the button's name/value.
  */
-export function SubmitButton({ children, className, pendingText = "Saving...", name, value, ariaLabel }: { children: ReactNode; className?: string; pendingText?: string; name?: string; value?: string; ariaLabel?: string }) {
+export function SubmitButton({
+  children,
+  className,
+  pendingText = "Saving...",
+  name,
+  value,
+  ariaLabel,
+}: {
+  children: ReactNode;
+  className?: string;
+  pendingText?: string;
+  name?: string;
+  value?: string;
+  ariaLabel?: string;
+}) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -108,12 +122,24 @@ export function HoldForHelp({ primaryName, primaryPhone }: { primaryName: string
       </button>
 
       {open ? (
-        <div role="alertdialog" aria-modal="true" aria-labelledby="help-title" className="fixed inset-0 z-50 flex flex-col gap-4 overflow-y-auto bg-white p-6">
-          <h2 id="help-title" className="text-elder-display text-ink">Getting help</h2>
+        <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="help-title"
+          className="fixed inset-0 z-50 flex flex-col gap-4 overflow-y-auto bg-white p-6"
+        >
+          <h2 id="help-title" className="text-elder-display text-ink">
+            Getting help
+          </h2>
           <p className="text-elder-body text-muted" aria-live="assertive">
-            {alerted ? `${primaryName} and the family have been alerted.` : `If you don't respond, ${primaryName} and the family will be alerted in ${countdown} seconds.`}
+            {alerted
+              ? `${primaryName} and the family have been alerted.`
+              : `If you don't respond, ${primaryName} and the family will be alerted in ${countdown} seconds.`}
           </p>
-          <a href={primaryPhone ? `tel:${primaryPhone.replace(/\s/g, "")}` : undefined} className="btn-primary btn-elder text-2xl">
+          <a
+            href={primaryPhone ? `tel:${primaryPhone.replace(/\s/g, "")}` : undefined}
+            className="btn-primary btn-elder text-2xl"
+          >
             <Phone className="h-7 w-7" aria-hidden /> Call {primaryName} now
           </a>
           <a href="tel:108" className="btn-danger btn-elder text-2xl">
@@ -122,7 +148,11 @@ export function HoldForHelp({ primaryName, primaryPhone }: { primaryName: string
           <button type="button" onClick={chime} className="btn-outline btn-elder">
             <Volume2 className="h-7 w-7" aria-hidden /> Ring loud chime
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="btn btn-elder mt-auto border-2 border-ink bg-white text-ink">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="btn btn-elder mt-auto border-2 border-ink bg-white text-ink"
+          >
             <X className="h-7 w-7" aria-hidden /> I&apos;m okay, cancel
           </button>
         </div>
@@ -171,7 +201,9 @@ export function ReadAloud({ en, hi }: { en: string; hi: string }) {
     }
     const utter = new SpeechSynthesisUtterance(lang === "hi" ? hi : en);
     utter.lang = lang === "hi" ? "hi-IN" : "en-IN";
-    const voice = synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang === "hi" ? "hi" : "en-in")) ?? synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang));
+    const voice =
+      synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang === "hi" ? "hi" : "en-in")) ??
+      synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang));
     if (voice) utter.voice = voice;
     utter.rate = 0.9;
     utter.onend = () => setSpeaking(null);
@@ -188,10 +220,17 @@ export function ReadAloud({ en, hi }: { en: string; hi: string }) {
           type="button"
           onClick={() => speak(lang)}
           aria-pressed={speaking === lang}
-          className={clsx("btn min-h-14 border-2 px-4 text-lg", speaking === lang ? "border-primary-soft bg-primary-soft text-white" : "border-primary-soft/40 bg-surface-low text-primary-soft")}
+          className={clsx(
+            "btn min-h-14 border-2 px-4 text-lg",
+            speaking === lang
+              ? "border-primary-soft bg-primary-soft text-white"
+              : "border-primary-soft/40 bg-surface-low text-primary-soft",
+          )}
         >
           <Volume2 className="h-6 w-6" aria-hidden />
-          <span lang={lang === "hi" ? "hi" : "en"}>{speaking === lang ? (lang === "hi" ? "रोकें" : "Stop") : lang === "hi" ? "सुनिए" : "Read aloud"}</span>
+          <span lang={lang === "hi" ? "hi" : "en"}>
+            {speaking === lang ? (lang === "hi" ? "रोकें" : "Stop") : lang === "hi" ? "सुनिए" : "Read aloud"}
+          </span>
         </button>
       ))}
     </div>

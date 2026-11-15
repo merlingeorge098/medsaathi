@@ -20,7 +20,11 @@ function refreshAll() {
 
 /* ---------------------------------- Doses --------------------------------- */
 
-const doseRef = z.object({ medicationId: z.string().min(1), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), time: z.string().regex(/^\d{2}:\d{2}$/) });
+const doseRef = z.object({
+  medicationId: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  time: z.string().regex(/^\d{2}:\d{2}$/),
+});
 
 export async function markDose(form: FormData): Promise<void> {
   const session = await requireSession("logDose");
@@ -68,7 +72,10 @@ export async function saveMedication(_: FormState, form: FormData): Promise<Form
   if (!schedule.ok) return { error: schedule.error };
 
   // Caretakers may fine-tune the suggested times; one HH:mm per slot.
-  const custom = (d.times ?? "").split(",").map((t) => t.trim()).filter((t) => /^\d{2}:\d{2}$/.test(t));
+  const custom = (d.times ?? "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => /^\d{2}:\d{2}$/.test(t));
   const times = custom.length === schedule.slots.length ? custom : schedule.slots.map((s) => s.time);
   const dosePerTime = Math.max(...schedule.slots.map((s) => s.count));
 
@@ -97,7 +104,12 @@ export async function saveMedication(_: FormState, form: FormData): Promise<Form
 
   if (!needsElderApproval(session.role)) {
     await store.put("medications", next);
-    await logActivity(session.profileId, session.name, "medicine", `${elderName(profile)} ${existing ? "updated" : "added"} ${next.name} ${next.strength}.`);
+    await logActivity(
+      session.profileId,
+      session.name,
+      "medicine",
+      `${elderName(profile)} ${existing ? "updated" : "added"} ${next.name} ${next.strength}.`,
+    );
     refreshAll();
     redirect(session.role === "owner" ? "/elder" : "/circle/medicines");
   }
@@ -107,7 +119,15 @@ export async function saveMedication(_: FormState, form: FormData): Promise<Form
     profileId: session.profileId,
     kind: existing ? "update_medication" : "add_medication",
     medicationId: existing?.id,
-    before: existing ? { times: existing.times, pattern: existing.pattern, strength: existing.strength, stock: existing.stock, food: existing.food } : undefined,
+    before: existing
+      ? {
+          times: existing.times,
+          pattern: existing.pattern,
+          strength: existing.strength,
+          stock: existing.stock,
+          food: existing.food,
+        }
+      : undefined,
     after: next,
     note: d.note,
     requestedBy: session.memberId,
@@ -116,7 +136,12 @@ export async function saveMedication(_: FormState, form: FormData): Promise<Form
     createdAt: new Date().toISOString(),
   };
   await store.put("changeRequests", request);
-  await logActivity(session.profileId, session.name, "medicine", `${firstName(session.name)} asked to ${existing ? "change" : "add"} ${next.name}. Waiting for ${elderName(profile)}.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "medicine",
+    `${firstName(session.name)} asked to ${existing ? "change" : "add"} ${next.name}. Waiting for ${elderName(profile)}.`,
+  );
   refreshAll();
   redirect("/circle/medicines?sent=1");
 }
@@ -143,7 +168,12 @@ export async function removeMedication(form: FormData): Promise<void> {
       status: "pending",
       createdAt: new Date().toISOString(),
     });
-    await logActivity(session.profileId, session.name, "medicine", `${firstName(session.name)} asked to stop ${med.name}. Waiting for ${elderName(profile)}.`);
+    await logActivity(
+      session.profileId,
+      session.name,
+      "medicine",
+      `${firstName(session.name)} asked to stop ${med.name}. Waiting for ${elderName(profile)}.`,
+    );
   }
   refreshAll();
 }
@@ -165,22 +195,38 @@ export async function decideChange(form: FormData): Promise<void> {
   let label = "a medicine";
   if (decision === "approved") {
     if (req.kind === "add_medication" && req.after) {
-      const med = { ...(req.after as Medication), id: req.after.id ?? newId("med"), profileId: session.profileId, active: true };
+      const med = {
+        ...(req.after as Medication),
+        id: req.after.id ?? newId("med"),
+        profileId: session.profileId,
+        active: true,
+      };
       await store.put("medications", med);
       label = med.name;
     } else if (req.medicationId) {
       const med = await store.get("medications", req.medicationId);
       if (med) {
         label = med.name;
-        await store.put("medications", req.kind === "remove_medication" ? { ...med, active: false } : { ...med, ...req.after, id: med.id, profileId: med.profileId, createdAt: med.createdAt });
+        await store.put(
+          "medications",
+          req.kind === "remove_medication"
+            ? { ...med, active: false }
+            : { ...med, ...req.after, id: med.id, profileId: med.profileId, createdAt: med.createdAt },
+        );
       }
     }
   } else {
     label = (req.after?.name ?? req.before?.name ?? label) as string;
   }
-  if (req.medicationId && label === "a medicine") label = (await store.get("medications", req.medicationId))?.name ?? label;
+  if (req.medicationId && label === "a medicine")
+    label = (await store.get("medications", req.medicationId))?.name ?? label;
   await store.put("changeRequests", { ...req, status: decision, decidedAt: new Date().toISOString() });
-  await logActivity(session.profileId, session.name, "medicine", `${elderName(profile)} ${decision === "approved" ? "approved" : "said no to"} ${firstName(req.requestedByName)}'s change to ${label}.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "medicine",
+    `${elderName(profile)} ${decision === "approved" ? "approved" : "said no to"} ${firstName(req.requestedByName)}'s change to ${label}.`,
+  );
   refreshAll();
   redirect("/elder/approvals");
 }
@@ -198,10 +244,20 @@ export async function decideMember(form: FormData): Promise<void> {
   const profile = await loadProfile(session.profileId);
   if (decision === "allow") {
     await store.put("members", { ...member, status: "active", role, alerts: role !== "viewer" });
-    await logActivity(session.profileId, session.name, "member", `${elderName(profile)} let ${member.name} join as ${role === "primary" ? "main caretaker" : role === "editor" ? "Can edit" : "Can view"}.`);
+    await logActivity(
+      session.profileId,
+      session.name,
+      "member",
+      `${elderName(profile)} let ${member.name} join as ${role === "primary" ? "main caretaker" : role === "editor" ? "Can edit" : "Can view"}.`,
+    );
   } else {
     await store.put("members", { ...member, status: "declined" });
-    await logActivity(session.profileId, session.name, "member", `${elderName(profile)} did not allow ${member.name} to join.`);
+    await logActivity(
+      session.profileId,
+      session.name,
+      "member",
+      `${elderName(profile)} did not allow ${member.name} to join.`,
+    );
   }
   refreshAll();
   redirect("/elder/approvals");
@@ -259,12 +315,21 @@ export async function createAppointment(_: FormState, form: FormData): Promise<F
     clinic: d.clinic,
     address: d.address,
     at: at.toISOString(),
-    carry: (d.carry ?? "Old prescription, Medicine strips").split(",").map((c) => c.trim()).filter(Boolean).map((label) => ({ label, done: false })),
+    carry: (d.carry ?? "Old prescription, Medicine strips")
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .map((label) => ({ label, done: false })),
     questions: [],
     notified: {},
     createdAt: new Date().toISOString(),
   });
-  await logActivity(session.profileId, session.name, "appointment", `${firstName(session.name)} booked ${d.doctor} on ${d.date} at ${formatTime(d.time)}.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "appointment",
+    `${firstName(session.name)} booked ${d.doctor} on ${d.date} at ${formatTime(d.time)}.`,
+  );
   refreshAll();
   return { ok: "Appointment added. Reminders go out a day before and 2 hours before." };
 }
@@ -278,7 +343,14 @@ export async function claimEscort(form: FormData): Promise<void> {
   const release = appt.escortMemberId === session.memberId;
   await store.put("appointments", { ...appt, escortMemberId: release ? undefined : session.memberId });
   const profile = await loadProfile(session.profileId);
-  await logActivity(session.profileId, session.name, "appointment", release ? `${firstName(session.name)} can no longer go to ${appt.doctor}.` : `${firstName(session.name)} will take ${elderName(profile)} to ${appt.doctor}.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "appointment",
+    release
+      ? `${firstName(session.name)} can no longer go to ${appt.doctor}.`
+      : `${firstName(session.name)} will take ${elderName(profile)} to ${appt.doctor}.`,
+  );
   refreshAll();
 }
 
@@ -306,7 +378,12 @@ export async function addQuestion(form: FormData): Promise<void> {
   if (!appt || appt.profileId !== session.profileId) return;
   appt.questions.push({ text: text.data, by: session.name });
   await store.put("appointments", appt);
-  await logActivity(session.profileId, session.name, "appointment", `${firstName(session.name)} added a question for ${appt.doctor}.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "appointment",
+    `${firstName(session.name)} added a question for ${appt.doctor}.`,
+  );
   refreshAll();
 }
 
@@ -315,23 +392,48 @@ export async function addQuestion(form: FormData): Promise<void> {
 export async function checkIn(form: FormData): Promise<void> {
   const session = await requireSession("checkIn");
   const mood = z.enum(["good", "okay", "unwell"]).parse(form.get("mood")) as Mood;
-  const note = z.string().trim().max(300).optional().parse(form.get("note") || undefined);
+  const note = z
+    .string()
+    .trim()
+    .max(300)
+    .optional()
+    .parse(form.get("note") || undefined);
   const store = await db();
-  await store.put("checkIns", { id: newId("ci"), profileId: session.profileId, mood, note, at: new Date().toISOString() });
+  await store.put("checkIns", {
+    id: newId("ci"),
+    profileId: session.profileId,
+    mood,
+    note,
+    at: new Date().toISOString(),
+  });
   const profile = await loadProfile(session.profileId);
   const label = { good: "good", okay: "okay", unwell: "not well" }[mood];
-  await logActivity(session.profileId, session.name, "checkin", `${elderName(profile)} checked in: feeling ${label}.${note ? ` "${note}"` : ""}`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "checkin",
+    `${elderName(profile)} checked in: feeling ${label}.${note ? ` "${note}"` : ""}`,
+  );
 
   if (mood === "unwell") {
     const { sendEmail, emailLayout } = await import("@/lib/email");
-    const members = (await store.byProfile("members", session.profileId)).filter((m) => m.status === "active" && m.alerts && m.role !== "owner" && m.email);
+    const members = (await store.byProfile("members", session.profileId)).filter(
+      (m) => m.status === "active" && m.alerts && m.role !== "owner" && m.email,
+    );
     for (const m of members) {
       await sendEmail({
         profileId: session.profileId,
         to: m.email,
         kind: "checkin_unwell",
         subject: `${elderName(profile)} is not feeling well today`,
-        html: emailLayout({ heading: `${elderName(profile)} said they are not feeling well`, lines: [note ? `They added: "${note}"` : "No note was added.", profile.phone ? `Call: ${profile.phone}` : ""].filter(Boolean), footer: "Sent from the daily check-in on MedSaathi." }),
+        html: emailLayout({
+          heading: `${elderName(profile)} said they are not feeling well`,
+          lines: [
+            note ? `They added: "${note}"` : "No note was added.",
+            profile.phone ? `Call: ${profile.phone}` : "",
+          ].filter(Boolean),
+          footer: "Sent from the daily check-in on MedSaathi.",
+        }),
       });
     }
   }
@@ -352,11 +454,17 @@ export async function saveEscalation(_: FormState, form: FormData): Promise<Form
   const session = await requireSession("editEscalation");
   const parsed = escalationSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  if (parsed.data.everyoneAfterMin <= parsed.data.primaryAfterMin) return { error: "Everyone should be told after the primary caretaker, not before." };
+  if (parsed.data.everyoneAfterMin <= parsed.data.primaryAfterMin)
+    return { error: "Everyone should be told after the primary caretaker, not before." };
   const store = await db();
   const profile = await loadProfile(session.profileId);
   await store.put("profiles", { ...profile, escalation: { ...profile.escalation, ...parsed.data } });
-  await logActivity(session.profileId, session.name, "settings", `${firstName(session.name)} updated the reminder ladder.`);
+  await logActivity(
+    session.profileId,
+    session.name,
+    "settings",
+    `${firstName(session.name)} updated the reminder ladder.`,
+  );
   refreshAll();
   return { ok: "Saved. New timings apply from the next dose." };
 }
@@ -368,7 +476,11 @@ export async function runRemindersNow(_prev?: FormState): Promise<FormState> {
   const { runReminders } = await import("@/lib/reminders");
   const summary = await runReminders();
   refreshAll();
-  return { ok: summary.steps.length ? `Checked all doses. Sent ${summary.emails} email(s) for ${summary.steps.length} step(s).` : "Checked all doses. Nothing is due right now." };
+  return {
+    ok: summary.steps.length
+      ? `Checked all doses. Sent ${summary.emails} email(s) for ${summary.steps.length} step(s).`
+      : "Checked all doses. Nothing is due right now.",
+  };
 }
 
 export async function sendTestReminder(_: FormState, form: FormData): Promise<FormState> {
@@ -385,7 +497,10 @@ export async function sendTestReminder(_: FormState, form: FormData): Promise<Fo
   const { date } = localNow();
   const time = med.times[0]!;
   const id = `${med.id}_${date}_${time}`;
-  const [taken, snooze] = await Promise.all([actionLink(id, "taken", session.memberId), actionLink(id, "snooze", session.memberId)]);
+  const [taken, snooze] = await Promise.all([
+    actionLink(id, "taken", session.memberId),
+    actionLink(id, "snooze", session.memberId),
+  ]);
   const delivered = await sendEmail({
     profileId: session.profileId,
     to: email.data,
@@ -394,12 +509,21 @@ export async function sendTestReminder(_: FormState, form: FormData): Promise<Fo
     html: emailLayout({
       heading: `${elderName(profile)} hasn't taken the ${formatTime(time)} medicine`,
       lines: ["This is a live sample of the missed-dose alert. The buttons below really update the dashboard."],
-      card: { title: `${med.name} ${med.strength}`, detail: `${med.dosePerTime} tablet, ${formatTime(time)}, ${med.food} food` },
-      buttons: [{ label: `${elderName(profile)} has taken it`, href: taken, primary: true }, { label: "Snooze 15 min", href: snooze }],
+      card: {
+        title: `${med.name} ${med.strength}`,
+        detail: `${med.dosePerTime} tablet, ${formatTime(time)}, ${med.food} food`,
+      },
+      buttons: [
+        { label: `${elderName(profile)} has taken it`, href: taken, primary: true },
+        { label: "Snooze 15 min", href: snooze },
+      ],
       footer: "Sent from the MedSaathi demo.",
     }),
   });
   refreshAll();
-  if (!emailConfigured()) return { ok: "Email saved to the outbox below. Add Gmail credentials to deliver it for real." };
-  return delivered ? { ok: `Sent to ${email.data}. Check your inbox and tap a button.` } : { error: "Couldn't deliver the email. It's saved in the outbox." };
+  if (!emailConfigured())
+    return { ok: "Email saved to the outbox below. Add Gmail credentials to deliver it for real." };
+  return delivered
+    ? { ok: `Sent to ${email.data}. Check your inbox and tap a button.` }
+    : { error: "Couldn't deliver the email. It's saved in the outbox." };
 }

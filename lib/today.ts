@@ -16,16 +16,28 @@ export interface TodayView {
   taken: number;
 }
 
-export function buildToday(meds: Medication[], logs: DoseLog[], settings: EscalationSettings, now: Date = new Date()): TodayView {
+export function buildToday(
+  meds: Medication[],
+  logs: DoseLog[],
+  settings: EscalationSettings,
+  now: Date = new Date(),
+): TodayView {
   const { date } = localNow(now);
-  const doses = dosesForDate(meds, logs, date).map((d) => ({ ...d, status: displayStatus({ date: d.date, time: d.time, log: d.log }, settings, now) }));
+  const doses = dosesForDate(meds, logs, date).map((d) => ({
+    ...d,
+    status: displayStatus({ date: d.date, time: d.time, log: d.log }, settings, now),
+  }));
   const open = doses.filter((d) => d.status === "due" || d.status === "missed" || d.status === "snoozed");
   const current = open[0];
   return {
     date,
     doses,
     current,
-    later: doses.filter((d) => d !== current && (d.status === "upcoming" || d.status === "due" || d.status === "snoozed" || d.status === "missed")),
+    later: doses.filter(
+      (d) =>
+        d !== current &&
+        (d.status === "upcoming" || d.status === "due" || d.status === "snoozed" || d.status === "missed"),
+    ),
     taken: doses.filter((d) => d.status === "taken").length,
   };
 }

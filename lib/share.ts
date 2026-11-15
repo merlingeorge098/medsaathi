@@ -21,7 +21,10 @@ export function dailyUpdateText(elderName: string, dateLabel: string, doses: Sha
   const taken = doses.filter((d) => d.status === "taken").length;
   const lines = [...doses]
     .sort((a, b) => a.time.localeCompare(b.time))
-    .map((d) => `${MARK[d.status]} ${formatTime(d.time)} ${d.medication.name}${d.medication.strength ? ` ${d.medication.strength}` : ""}`);
+    .map(
+      (d) =>
+        `${MARK[d.status]} ${formatTime(d.time)} ${d.medication.name}${d.medication.strength ? ` ${d.medication.strength}` : ""}`,
+    );
   return [
     `*${elderName}'s medicines, ${dateLabel}*`,
     `${taken} of ${doses.length} taken so far`,

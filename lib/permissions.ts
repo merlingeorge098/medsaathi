@@ -16,7 +16,17 @@ export type Action =
   | "checkIn";
 
 const MATRIX: Record<Role, Action[]> = {
-  owner: ["view", "logDose", "proposeMedication", "applyMedication", "manageAppointments", "approveChanges", "manageMembers", "editEscalation", "checkIn"],
+  owner: [
+    "view",
+    "logDose",
+    "proposeMedication",
+    "applyMedication",
+    "manageAppointments",
+    "approveChanges",
+    "manageMembers",
+    "editEscalation",
+    "checkIn",
+  ],
   primary: ["view", "logDose", "proposeMedication", "manageAppointments", "editEscalation"],
   editor: ["view", "logDose", "proposeMedication", "manageAppointments"],
   viewer: ["view"],

@@ -10,7 +10,10 @@ export interface DoseSpeechInput {
 }
 
 /** Spoken when nothing is due: the next dose, or a well-done when the day is complete. */
-export function nextDoseSpeech(elderName: string, next?: { medicine: string; strength?: string; time: string }): { en: string; hi: string } {
+export function nextDoseSpeech(
+  elderName: string,
+  next?: { medicine: string; strength?: string; time: string },
+): { en: string; hi: string } {
   if (!next) {
     return {
       en: `${elderName} ji, all your medicines for today are done. Well done!`,
@@ -24,7 +27,10 @@ export function nextDoseSpeech(elderName: string, next?: { medicine: string; str
   };
 }
 
-export function doseSpeech({ elderName, medicine, strength, tablets, food }: DoseSpeechInput): { en: string; hi: string } {
+export function doseSpeech({ elderName, medicine, strength, tablets, food }: DoseSpeechInput): {
+  en: string;
+  hi: string;
+} {
   const med = [medicine, strength].filter(Boolean).join(" ");
   const count = Math.max(1, Math.round(tablets));
   const enFood = food === "after" ? " after your meal" : food === "before" ? " before your meal" : "";

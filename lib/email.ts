@@ -52,7 +52,9 @@ export async function sendEmail(mail: OutgoingEmail): Promise<boolean> {
 }
 
 export function appUrl(): string {
-  return (process.env.APP_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")).replace(/\/$/, "");
+  return (
+    process.env.APP_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+  ).replace(/\/$/, "");
 }
 
 function escape(text: string): string {
@@ -65,7 +67,13 @@ interface Button {
   primary?: boolean;
 }
 
-export function emailLayout(opts: { heading: string; lines: string[]; card?: { title: string; detail: string }; buttons?: Button[]; footer: string }): string {
+export function emailLayout(opts: {
+  heading: string;
+  lines: string[];
+  card?: { title: string; detail: string };
+  buttons?: Button[];
+  footer: string;
+}): string {
   const buttons = (opts.buttons ?? [])
     .map(
       (b) =>

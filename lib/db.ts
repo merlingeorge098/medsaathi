@@ -108,7 +108,9 @@ class FirestoreStore implements Store {
 const globalForStore = globalThis as unknown as { __medsaathiStore?: Store };
 
 export function usingFirestore(): boolean {
-  return Boolean(process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY);
+  return Boolean(
+    process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY,
+  );
 }
 
 async function createFirestore(): Promise<Store> {

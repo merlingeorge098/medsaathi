@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { displayStatus, pendingSteps } from "@/lib/escalation";
 import { istInstant } from "@/lib/time";
 
-const settings = { headsUpMin: 10, primaryAfterMin: 30, everyoneAfterMin: 60, appointmentReminderHours: [24, 2], refillWarnDays: 5 };
+const settings = {
+  headsUpMin: 10,
+  primaryAfterMin: 30,
+  everyoneAfterMin: 60,
+  appointmentReminderHours: [24, 2],
+  refillWarnDays: 5,
+};
 const at = (time: string) => istInstant("2026-11-15", time);
 const dose = { date: "2026-11-15", time: "14:00" };
 
@@ -34,8 +40,12 @@ describe("pendingSteps", () => {
   });
 
   it("sends one skip notice with the reason, then nothing", () => {
-    expect(pendingSteps({ ...dose, log: { status: "skipped", notified: {} } }, settings, at("14:05"))).toEqual(["skip"]);
-    expect(pendingSteps({ ...dose, log: { status: "skipped", notified: { skip: true } } }, settings, at("14:05"))).toEqual([]);
+    expect(pendingSteps({ ...dose, log: { status: "skipped", notified: {} } }, settings, at("14:05"))).toEqual([
+      "skip",
+    ]);
+    expect(
+      pendingSteps({ ...dose, log: { status: "skipped", notified: { skip: true } } }, settings, at("14:05")),
+    ).toEqual([]);
   });
 
   it("restarts the clock from the snooze time", () => {

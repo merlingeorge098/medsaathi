@@ -16,7 +16,9 @@ function Side({ title, med }: { title: string; med?: Partial<Medication> }) {
       <p className="eyebrow">{title}</p>
       {med ? (
         <>
-          <p className="mt-1 text-elder-body font-bold">{med.name ?? ""} {med.strength ?? ""}</p>
+          <p className="mt-1 text-elder-body font-bold">
+            {med.name ?? ""} {med.strength ?? ""}
+          </p>
           <p className="text-elder-body">{fmtTimes(med.times) || "Stopped"}</p>
         </>
       ) : (
@@ -36,7 +38,9 @@ export default async function ApprovalsPage() {
   return (
     <div className="space-y-8">
       <h1 className="text-elder-display">Waiting for you</h1>
-      {changes.length + people.length === 0 ? <p className="text-elder-body text-muted">Nothing to decide right now.</p> : null}
+      {changes.length + people.length === 0 ? (
+        <p className="text-elder-body text-muted">Nothing to decide right now.</p>
+      ) : null}
 
       {changes.map((c) => {
         const current = medName(c.medicationId);
@@ -45,19 +49,30 @@ export default async function ApprovalsPage() {
         return (
           <section key={c.id} className="card space-y-5 p-5" aria-label={`Change from ${c.requestedByName}`}>
             <h2 className="text-elder-title">
-              {c.requestedByName.split(" ")[0]} wants to {c.kind === "add_medication" ? "add a medicine" : c.kind === "remove_medication" ? "stop a medicine" : "change something"}
+              {c.requestedByName.split(" ")[0]} wants to{" "}
+              {c.kind === "add_medication"
+                ? "add a medicine"
+                : c.kind === "remove_medication"
+                  ? "stop a medicine"
+                  : "change something"}
             </h2>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Side title="Before" med={before} />
               <Side title="After" med={after} />
             </div>
-            {c.note ? <blockquote className="border-l-4 border-clay-strong pl-4 text-elder-body italic">&ldquo;{c.note}&rdquo;</blockquote> : null}
+            {c.note ? (
+              <blockquote className="border-l-4 border-clay-strong pl-4 text-elder-body italic">
+                &ldquo;{c.note}&rdquo;
+              </blockquote>
+            ) : null}
             <div className="space-y-3">
-              {([
-                { decision: "approved", label: "Yes, okay", cls: "btn-primary btn-elder" },
-                { decision: "declined", label: "No, keep it", cls: "btn-outline btn-elder" },
-                { decision: "later", label: "Ask me later", cls: "btn-ghost btn-elder" },
-              ] as const).map((o) => (
+              {(
+                [
+                  { decision: "approved", label: "Yes, okay", cls: "btn-primary btn-elder" },
+                  { decision: "declined", label: "No, keep it", cls: "btn-outline btn-elder" },
+                  { decision: "later", label: "Ask me later", cls: "btn-ghost btn-elder" },
+                ] as const
+              ).map((o) => (
                 <form key={o.decision} action={decideChange}>
                   <input type="hidden" name="id" value={c.id} />
                   <input type="hidden" name="decision" value={o.decision} />
@@ -65,7 +80,9 @@ export default async function ApprovalsPage() {
                 </form>
               ))}
             </div>
-            <p className="text-base text-muted">Asked by {c.requestedByName}, {formatDateTime(c.createdAt)}</p>
+            <p className="text-base text-muted">
+              Asked by {c.requestedByName}, {formatDateTime(c.createdAt)}
+            </p>
           </section>
         );
       })}
@@ -84,8 +101,17 @@ export default async function ApprovalsPage() {
             <fieldset className="space-y-3">
               <legend className="mb-2 text-elder-body font-bold">What can {m.name.split(" ")[0]} do?</legend>
               {(Object.keys(ROLE_DESCRIPTION) as (keyof typeof ROLE_DESCRIPTION)[]).map((role, i) => (
-                <label key={role} className="flex min-h-elder cursor-pointer items-center gap-4 rounded-xl border-2 border-line px-4 has-[:checked]:border-primary-soft has-[:checked]:bg-surface-low">
-                  <input type="radio" name="role" value={role} defaultChecked={i === 0} className="h-6 w-6 accent-[#1e6b62]" />
+                <label
+                  key={role}
+                  className="flex min-h-elder cursor-pointer items-center gap-4 rounded-xl border-2 border-line px-4 has-[:checked]:border-primary-soft has-[:checked]:bg-surface-low"
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={role}
+                    defaultChecked={i === 0}
+                    className="h-6 w-6 accent-[#1e6b62]"
+                  />
                   <span className="text-elder-body">{ROLE_DESCRIPTION[role]}</span>
                 </label>
               ))}
@@ -100,7 +126,9 @@ export default async function ApprovalsPage() {
           </form>
         </section>
       ))}
-      <Link href="/elder" className="btn-ghost btn-elder">Back to today</Link>
+      <Link href="/elder" className="btn-ghost btn-elder">
+        Back to today
+      </Link>
     </div>
   );
 }

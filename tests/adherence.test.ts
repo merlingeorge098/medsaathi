@@ -4,11 +4,26 @@ import { istInstant } from "@/lib/time";
 import type { DoseLog, Medication } from "@/lib/types";
 
 const med: Medication = {
-  id: "m1", profileId: "p", name: "Amlodipine", strength: "5 mg", pattern: "0-1-0", food: "after",
-  times: ["14:00"], dosePerTime: 1, stock: 10, active: true, createdAt: "2026-11-01T00:00:00Z",
+  id: "m1",
+  profileId: "p",
+  name: "Amlodipine",
+  strength: "5 mg",
+  pattern: "0-1-0",
+  food: "after",
+  times: ["14:00"],
+  dosePerTime: 1,
+  stock: 10,
+  active: true,
+  createdAt: "2026-11-01T00:00:00Z",
 };
 const log = (date: string, partial: Partial<DoseLog>): DoseLog => ({
-  id: doseId("m1", date, "14:00"), profileId: "p", medicationId: "m1", date, time: "14:00", notified: {}, ...partial,
+  id: doseId("m1", date, "14:00"),
+  profileId: "p",
+  medicationId: "m1",
+  date,
+  time: "14:00",
+  notified: {},
+  ...partial,
 });
 
 describe("adherence", () => {

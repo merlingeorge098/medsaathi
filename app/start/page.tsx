@@ -8,10 +8,15 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const forWhom = (await searchParams).for === "self" ? "self" : "other";
   return (
     <main id="main" className="mx-auto max-w-xl px-5 py-10">
-      <Link href="/" className="text-lg font-bold text-primary">MedSaathi</Link>
-      <h1 className="mt-8 text-elder-display">{forWhom === "self" ? "Set up your care circle" : "Set up care for someone you love"}</h1>
+      <Link href="/" className="text-lg font-bold text-primary">
+        MedSaathi
+      </Link>
+      <h1 className="mt-8 text-elder-display">
+        {forWhom === "self" ? "Set up your care circle" : "Set up care for someone you love"}
+      </h1>
       <p className="mb-8 mt-2 text-elder-body text-muted">
-        You&apos;ll get a 6-digit Care Code. Share it with family, and {forWhom === "self" ? "you" : "they"} decide what each person can do.
+        You&apos;ll get a 6-digit Care Code. Share it with family, and {forWhom === "self" ? "you" : "they"} decide what
+        each person can do.
       </p>
       <CreateProfileForm forWhom={forWhom} />
     </main>

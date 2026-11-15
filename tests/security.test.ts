@@ -68,7 +68,7 @@ describe("reminder email template", () => {
       lines: ["Baba's <b>dose</b>"],
       card: { title: "<img src=x onerror=alert(1)>", detail: "a & b" },
       buttons: [{ label: "<i>Mark</i>", href: "https://example.com/a" }],
-      footer: "\"quoted\"",
+      footer: '"quoted"',
     });
     expect(html).not.toContain("<script>");
     expect(html).not.toContain("<img");
@@ -80,7 +80,12 @@ describe("reminder email template", () => {
   });
 
   it("escapes button links so they cannot break out of the href", () => {
-    const html = emailLayout({ heading: "h", lines: [], buttons: [{ label: "Go", href: 'https://x.test/" onclick="alert(1)' }], footer: "f" });
+    const html = emailLayout({
+      heading: "h",
+      lines: [],
+      buttons: [{ label: "Go", href: 'https://x.test/" onclick="alert(1)' }],
+      footer: "f",
+    });
     expect(html).not.toContain('" onclick="');
     expect(html).toContain("&quot; onclick=&quot;");
   });

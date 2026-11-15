@@ -24,7 +24,14 @@ export function CircleNav() {
         const active = href === "/circle" ? path === href : path.startsWith(href);
         return (
           <li key={href} className="shrink-0">
-            <Link href={href} aria-current={active ? "page" : undefined} className={clsx("flex items-center gap-3 rounded-full px-4 py-2.5 text-base font-semibold", active ? "bg-primary-soft text-white" : "text-muted hover:bg-surface-high")}>
+            <Link
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={clsx(
+                "flex items-center gap-3 rounded-full px-4 py-2.5 text-base font-semibold",
+                active ? "bg-primary-soft text-white" : "text-muted hover:bg-surface-high",
+              )}
+            >
               <Icon className="h-5 w-5" aria-hidden />
               {label}
             </Link>

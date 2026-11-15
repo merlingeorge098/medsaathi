@@ -9,7 +9,14 @@ import type { SkipReason } from "@/lib/types";
 
 export interface ScanState {
   error?: string;
-  medicines?: { name: string; strength: string; pattern: string; food: "before" | "after" | "any"; purpose?: string; durationDays?: number | null }[];
+  medicines?: {
+    name: string;
+    strength: string;
+    pattern: string;
+    food: "before" | "after" | "any";
+    purpose?: string;
+    durationDays?: number | null;
+  }[];
 }
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -59,7 +66,9 @@ export async function makeDoctorSummary(_prev?: SummaryState): Promise<SummarySt
     `Patterns: ${report.patterns.join(" ")}`,
     reasons ? `Reasons given for skipping: ${reasons}.` : "",
     next?.questions.length ? `Family questions: ${next.questions.map((q) => q.text).join(" | ")}` : "",
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   const { geminiConfigured, doctorSummary } = await import("@/lib/gemini");
   if (geminiConfigured()) {

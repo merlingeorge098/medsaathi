@@ -24,16 +24,18 @@ export const loadMembers = cache(async (profileId: string): Promise<Member[]> =>
 
 export async function loadCareData(profileId: string) {
   const store = await db();
-  const [profile, members, medications, doseLogs, changeRequests, appointments, activity, checkIns] = await Promise.all([
-    loadProfile(profileId),
-    loadMembers(profileId),
-    store.byProfile("medications", profileId),
-    store.byProfile("doseLogs", profileId),
-    store.byProfile("changeRequests", profileId),
-    store.byProfile("appointments", profileId),
-    store.byProfile("activity", profileId),
-    store.byProfile("checkIns", profileId),
-  ]);
+  const [profile, members, medications, doseLogs, changeRequests, appointments, activity, checkIns] = await Promise.all(
+    [
+      loadProfile(profileId),
+      loadMembers(profileId),
+      store.byProfile("medications", profileId),
+      store.byProfile("doseLogs", profileId),
+      store.byProfile("changeRequests", profileId),
+      store.byProfile("appointments", profileId),
+      store.byProfile("activity", profileId),
+      store.byProfile("checkIns", profileId),
+    ],
+  );
   return {
     profile,
     members,
@@ -46,7 +48,12 @@ export async function loadCareData(profileId: string) {
   };
 }
 
-export async function logActivity(profileId: string, actor: string, kind: Activity["kind"], text: string): Promise<void> {
+export async function logActivity(
+  profileId: string,
+  actor: string,
+  kind: Activity["kind"],
+  text: string,
+): Promise<void> {
   const store = await db();
   await store.put("activity", { id: newId("act"), profileId, actor, kind, text, at: new Date().toISOString() });
 }

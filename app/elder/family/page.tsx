@@ -21,9 +21,19 @@ export default async function FamilyPage() {
             <Avatar name={m.name} />
             <div className="flex-1">
               <p className="text-elder-body font-bold">{m.name}</p>
-              <p className="text-base text-muted">{m.relation}, {ROLE_LABEL[m.role]}</p>
+              <p className="text-base text-muted">
+                {m.relation}, {ROLE_LABEL[m.role]}
+              </p>
             </div>
-            {m.phone ? <a href={`tel:${m.phone.replace(/\s/g, "")}`} className="btn-primary h-14 w-14 rounded-full" aria-label={`Call ${m.name}`}><Phone className="h-6 w-6" aria-hidden /></a> : null}
+            {m.phone ? (
+              <a
+                href={`tel:${m.phone.replace(/\s/g, "")}`}
+                className="btn-primary h-14 w-14 rounded-full"
+                aria-label={`Call ${m.name}`}
+              >
+                <Phone className="h-6 w-6" aria-hidden />
+              </a>
+            ) : null}
           </li>
         ))}
       </ul>

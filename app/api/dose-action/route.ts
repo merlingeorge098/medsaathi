@@ -28,7 +28,8 @@ export async function GET(req: NextRequest) {
   const store = await db();
   const member = await store.get("members", data.memberId);
   const med = await store.get("medications", medicationId);
-  if (!member || !med || member.profileId !== med.profileId || member.status !== "active" || member.role === "viewer") return done("expired");
+  if (!member || !med || member.profileId !== med.profileId || member.status !== "active" || member.role === "viewer")
+    return done("expired");
 
   await applyDoseAction(med.profileId, member.id, member.name, { medicationId, date, time }, data.action);
   return done(data.action === "taken" ? "taken" : "snoozed");
