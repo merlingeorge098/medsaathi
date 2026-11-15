@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 6rem; }
   body { @apply bg-surface text-ink font-sans antialiased; }
   :focus-visible { @apply outline outline-[3px] outline-offset-2 outline-clay-strong; }
 }

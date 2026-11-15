@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, BellRing, CalendarDays, Camera, HeartPulse, KeyRound, Mail, ShieldCheck, User, Users } from "lucide-react";
+import { ArrowRight, BellRing, CalendarDays, Camera, HeartPulse, KeyRound, Mail, Menu, ShieldCheck, User, Users, X } from "lucide-react";
 import { demoLogin } from "./actions/auth";
 import { getSession } from "@/lib/session";
 import { SubmitButton } from "@/components/client";
@@ -10,6 +10,13 @@ import pillsAtHome from "../public/images/pills-at-home.jpg";
 import grandfatherGrandson from "../public/images/grandfather-grandson.jpg";
 import appElder from "../public/images/app-elder.jpg";
 import appCircle from "../public/images/app-circle.jpg";
+
+const NAV = [
+  { href: "#product", label: "Product" },
+  { href: "#rx", label: "Prescriptions" },
+  { href: "#decides", label: "Elder first" },
+  { href: "#ladder", label: "Reminders" },
+];
 
 const LADDER = [
   { time: "10 min before", who: "Baba", what: "A gentle heads-up that a dose is coming." },
@@ -24,9 +31,40 @@ export default async function Home() {
 
   return (
     <>
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-ink/95 text-white backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-6">
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+            <HeartPulse className="h-6 w-6 text-primary-tint" aria-hidden /> MedSaathi
+          </Link>
+          <nav aria-label="Sections" className="hidden items-center gap-1 lg:flex">
+            {NAV.map((n) => (
+              <a key={n.href} href={n.href} className="rounded-full px-4 py-2 text-base font-semibold text-white/80 hover:bg-white/10 hover:text-white">{n.label}</a>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <Link href="/login" className="hidden rounded-full px-4 py-2 font-semibold text-white/90 hover:bg-white/10 sm:inline-flex">Log in</Link>
+            <Link href="/start?for=other" className="rounded-full bg-clay-strong px-5 py-2 font-semibold text-white hover:bg-clay">Get started</Link>
+            <details className="group relative lg:hidden">
+              <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full hover:bg-white/10 [&::-webkit-details-marker]:hidden" aria-label="Menu">
+                <Menu className="h-6 w-6 group-open:hidden" aria-hidden />
+                <X className="hidden h-6 w-6 group-open:block" aria-hidden />
+              </summary>
+              <div className="absolute right-0 top-12 w-64 rounded-2xl bg-card p-2 text-ink shadow-2xl ring-1 ring-line">
+                {NAV.map((n) => (
+                  <a key={n.href} href={n.href} className="block rounded-xl px-4 py-3 font-semibold hover:bg-surface-low">{n.label}</a>
+                ))}
+                <div className="my-2 border-t border-line" />
+                <Link href="/login" className="block rounded-xl px-4 py-3 font-semibold hover:bg-surface-low">Log in</Link>
+                <Link href="/join" className="block rounded-xl px-4 py-3 font-semibold hover:bg-surface-low">I have a Care Code</Link>
+              </div>
+            </details>
+          </div>
+        </div>
+      </header>
+
       <main id="main">
         {/* Hero: full-bleed photo */}
-        <section className="relative isolate flex min-h-[92vh] flex-col overflow-hidden bg-ink text-white">
+        <section className="relative isolate flex min-h-[calc(92vh-4rem)] flex-col overflow-hidden bg-ink text-white">
           <div className="absolute inset-0 -z-10 lg:left-[38%]">
             <Image
               src={familyGarden}
@@ -40,17 +78,7 @@ export default async function Home() {
           </div>
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/70 to-ink/20 lg:bg-gradient-to-r lg:from-ink lg:from-[38%] lg:via-ink/20 lg:via-[52%] lg:to-transparent" />
 
-          <header className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-6">
-            <p className="flex items-center gap-2 text-xl font-bold">
-              <HeartPulse className="h-6 w-6 text-primary-tint" aria-hidden /> MedSaathi
-            </p>
-            <nav aria-label="Account" className="flex items-center gap-2">
-              <Link href="/join" className="hidden rounded-full px-4 py-2 font-semibold text-white/90 hover:bg-white/10 sm:inline-flex">I have a Care Code</Link>
-              <Link href="/login" className="rounded-full border-2 border-white/80 px-5 py-2 font-semibold hover:bg-white hover:text-ink">Log in</Link>
-            </nav>
-          </header>
-
-          <div className="mx-auto flex w-full max-w-6xl flex-1 items-end px-6 pb-12 pt-24 lg:items-center lg:pb-20">
+          <div className="mx-auto flex w-full max-w-7xl flex-1 items-end px-6 pb-12 pt-24 lg:items-center lg:pb-20">
             <div className="max-w-2xl">
               <p className="text-lg font-semibold text-clay-soft">Medicine care for elders and their families</p>
               <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
@@ -74,8 +102,8 @@ export default async function Home() {
           </div>
 
           <div className="border-t border-white/15 bg-ink/40">
-            <ul className="mx-auto grid max-w-6xl gap-4 px-6 py-5 text-base font-semibold sm:grid-cols-3">
-              <li className="flex items-center gap-3"><Camera className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Snap a prescription, Gemini reads it</li>
+            <ul className="mx-auto grid max-w-7xl gap-4 px-6 py-5 text-base font-semibold sm:grid-cols-3">
+              <li className="flex items-center gap-3"><Camera className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Snap a photo of the prescription</li>
               <li className="flex items-center gap-3"><BellRing className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Missed dose? The family is emailed</li>
               <li className="flex items-center gap-3"><ShieldCheck className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Baba approves every change</li>
             </ul>
@@ -84,7 +112,7 @@ export default async function Home() {
 
         {/* Real product on deep teal */}
         <section aria-labelledby="product" className="bg-primary text-white">
-          <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-7xl px-6 py-20 md:py-24">
             <div className="grid gap-6 md:grid-cols-2 md:items-end">
               <h2 id="product" className="text-4xl font-bold tracking-tight sm:text-5xl">One profile.<br />Two views.</h2>
               <p className="text-lg text-white/80">Baba sees one thing at a time, in large text. The family sees everything at a glance. Same data, kept in sync.</p>
@@ -104,12 +132,12 @@ export default async function Home() {
 
         {/* Prescriptions on warm cream */}
         <section aria-labelledby="rx" className="bg-[#fbf1e8]">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
             <Image src={pillsAtHome} alt="An elderly man sorting tablets into a pill organiser at home" placeholder="blur" sizes="(min-width: 768px) 560px, 100vw" className="aspect-square w-full rounded-2xl object-cover" />
             <div>
               <p className="text-base font-bold text-clay">Prescriptions</p>
               <h2 id="rx" className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Write it the way the doctor does.</h2>
-              <p className="mt-5 text-lg text-muted">Type it as Indian doctors write it, or take a photo and Gemini reads it. MedSaathi turns it into a daily schedule and counts the tablets left.</p>
+              <p className="mt-5 text-lg text-muted">Type it as Indian doctors write it, or just take a photo of it. MedSaathi turns it into a daily schedule and counts the tablets left.</p>
               <dl className="mt-8 divide-y divide-clay/15 rounded-2xl bg-card shadow-sm ring-1 ring-clay/15">
                 <div className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <dt className="text-muted">You type</dt>
@@ -130,7 +158,7 @@ export default async function Home() {
 
         {/* Elder decides */}
         <section aria-labelledby="decides" className="bg-card">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
             <div className="md:order-2">
               <Image src={grandfatherGrandson} alt="A grandfather feeding his grandson" placeholder="blur" sizes="(min-width: 768px) 560px, 100vw" className="aspect-square w-full rounded-2xl object-cover" />
             </div>
@@ -142,7 +170,7 @@ export default async function Home() {
                 {[
                   { icon: ShieldCheck, title: "Medicine changes need his yes", text: "Rahul suggests a new dose. Baba sees it in plain words and says yes or no." },
                   { icon: Users, title: "He chooses who joins", text: "New family members wait until Baba lets them in and picks their role." },
-                  { icon: CalendarDays, title: "Ready for the doctor", text: "Visits with a carry list, questions to ask and a Gemini summary of the month." },
+                  { icon: CalendarDays, title: "Ready for the doctor", text: "Visits with a carry list, questions to ask and a one-page summary of the month." },
                 ].map(({ icon: Icon, title, text }) => (
                   <li key={title} className="flex gap-4">
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-white"><Icon className="h-6 w-6" aria-hidden /></span>
@@ -159,7 +187,7 @@ export default async function Home() {
 
         {/* Escalation on ink */}
         <section aria-labelledby="ladder" className="bg-ink text-white">
-          <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-7xl px-6 py-20 md:py-24">
             <div className="grid gap-6 md:grid-cols-2 md:items-end">
               <h2 id="ladder" className="text-4xl font-bold tracking-tight sm:text-5xl">When a dose is missed.</h2>
               <p className="text-lg text-white/75">Each step only happens if the dose still isn&apos;t marked as taken. The right person hears at the right time, and nobody gets spammed.</p>
@@ -180,7 +208,7 @@ export default async function Home() {
 
         {/* Start on terracotta */}
         <section aria-labelledby="start" className="bg-clay text-white">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
             <div>
               <h2 id="start" className="text-4xl font-bold tracking-tight sm:text-5xl">Start your family&apos;s care circle.</h2>
               <p className="mt-5 text-lg text-white/85">Free, and works on any phone. The whole family joins with one 6-digit Care Code.</p>
@@ -205,8 +233,8 @@ export default async function Home() {
       </main>
 
       <footer className="bg-ink text-white/70">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-8 text-sm md:flex-row md:justify-between">
-          <p><span className="font-bold text-white">MedSaathi</span> · Built with Cloud Firestore, Gemini, Gmail, Google Calendar and Google Maps</p>
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-8 text-sm md:flex-row md:justify-between">
+          <p><span className="font-bold text-white">MedSaathi</span> · Works with Gmail, Google Calendar and Google Maps</p>
           <p>Photos from <a className="underline hover:text-white" href="https://www.pexels.com" rel="noopener noreferrer" target="_blank">Pexels</a></p>
         </div>
       </footer>

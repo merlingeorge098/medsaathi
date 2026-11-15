@@ -174,9 +174,9 @@ export function MedicationForm({ medication, needsApproval, elder }: { medicatio
       {!medication ? (
         <form action={scanAction} className="card space-y-3 border-dashed p-5">
           <p className="flex items-center gap-2 text-lg font-bold">
-            <ScanLine className="h-5 w-5 text-primary-soft" aria-hidden /> Scan a prescription with Gemini
+            <ScanLine className="h-5 w-5 text-primary-soft" aria-hidden /> Scan a prescription
           </p>
-          <p className="text-base text-muted">Take a photo of the doctor&apos;s prescription. Gemini reads the medicines and the 1-0-1 pattern for you.</p>
+          <p className="text-base text-muted">Take a photo of the doctor&apos;s prescription. MedSaathi reads the medicines and the 1-0-1 pattern for you.</p>
           <label className="flex flex-wrap items-center gap-3">
             <span className="sr-only">Prescription photo</span>
             <input name="photo" type="file" accept="image/*" capture="environment" className="text-base file:mr-3 file:rounded-full file:border-0 file:bg-surface-high file:px-4 file:py-2 file:font-semibold" />
@@ -418,7 +418,7 @@ export function DoctorSummary() {
       {state.summary ? (
         <div aria-live="polite" className="space-y-2">
           <p className="whitespace-pre-line text-base leading-relaxed">{state.summary}</p>
-          <p className="text-sm text-outline">{state.source === "gemini" ? "Written by Gemini from the last 30 days of dose records." : "Generated from the last 30 days of dose records. Add a Gemini key for a written summary."}</p>
+          <p className="text-sm text-outline">{state.source === "gemini" ? "Written from the last 30 days of dose records." : "Made from the last 30 days of dose records."}</p>
           <button type="button" onClick={() => window.print()} className="btn-ghost btn-md">Print</button>
         </div>
       ) : (

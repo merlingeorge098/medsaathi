@@ -24,7 +24,7 @@ export async function scanPrescription(_: ScanState, form: FormData): Promise<Sc
   if (!mime.success) return { error: "Please upload a JPG, PNG or WEBP photo." };
 
   const { geminiConfigured, readPrescription } = await import("@/lib/gemini");
-  if (!geminiConfigured()) return { error: "Prescription scanning needs a Gemini API key (GEMINI_API_KEY)." };
+  if (!geminiConfigured()) return { error: "Prescription scanning isn't available right now." };
   try {
     const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
     const medicines = await readPrescription(base64, mime.data);
@@ -32,7 +32,7 @@ export async function scanPrescription(_: ScanState, form: FormData): Promise<Sc
     return { medicines };
   } catch (error) {
     console.error("[gemini] scan failed", error);
-    return { error: "Gemini couldn't read that photo right now. Please try again." };
+    return { error: "We couldn't read that photo right now. Please try again." };
   }
 }
 
