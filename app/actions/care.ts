@@ -25,7 +25,9 @@ const doseRef = z.object({ medicationId: z.string().min(1), date: z.string().reg
 export async function markDose(form: FormData): Promise<void> {
   const session = await requireSession("logDose");
   const ref = doseRef.parse({ medicationId: form.get("medicationId"), date: form.get("date"), time: form.get("time") });
-  const action = z.enum(["taken", "snooze"]).parse(form.get("action"));
+  const parsedAction = z.enum(["taken", "snooze"]).safeParse(form.get("action"));
+  if (!parsedAction.success) redirect(session.role === "owner" ? "/elder" : "/circle");
+  const action = parsedAction.data;
   await applyDoseAction(session.profileId, session.memberId, session.name, ref, action);
   refreshAll();
 }
@@ -151,7 +153,9 @@ export async function removeMedication(form: FormData): Promise<void> {
 export async function decideChange(form: FormData): Promise<void> {
   const session = await requireSession("approveChanges");
   const id = z.string().parse(form.get("id"));
-  const decision = z.enum(["approved", "declined", "later"]).parse(form.get("decision"));
+  const parsedDecision = z.enum(["approved", "declined", "later"]).safeParse(form.get("decision"));
+  if (!parsedDecision.success) redirect("/elder/approvals");
+  const decision = parsedDecision.data;
   if (decision === "later") redirect("/elder");
   const store = await db();
   const req = await store.get("changeRequests", id);
@@ -184,7 +188,9 @@ export async function decideChange(form: FormData): Promise<void> {
 export async function decideMember(form: FormData): Promise<void> {
   const session = await requireSession("manageMembers");
   const id = z.string().parse(form.get("id"));
-  const decision = z.enum(["allow", "deny"]).parse(form.get("decision"));
+  const parsedDecision = z.enum(["allow", "deny"]).safeParse(form.get("decision"));
+  if (!parsedDecision.success) redirect("/elder/approvals");
+  const decision = parsedDecision.data;
   const role = z.enum(["viewer", "editor", "primary"]).catch("viewer").parse(form.get("role"));
   const store = await db();
   const member = await store.get("members", id);

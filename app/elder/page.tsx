@@ -77,17 +77,26 @@ export default async function ElderToday({ searchParams }: { searchParams: Promi
             <ReadAloud
               {...doseSpeech({ elderName: name, medicine: current.medication.name, strength: current.medication.strength, tablets: current.medication.dosePerTime, food: current.medication.food })}
             />
-            <form action={markDose} className="space-y-3">
-              <input type="hidden" name="medicationId" value={current.medication.id} />
-              <input type="hidden" name="date" value={current.date} />
-              <input type="hidden" name="time" value={current.time} />
-              <SubmitButton name="action" value="taken" className="btn-primary btn-elder text-2xl" pendingText="Saving...">
-                <CheckCircle2 className="h-7 w-7" aria-hidden /> I took it
-              </SubmitButton>
-              <SubmitButton name="action" value="snooze" className="btn-outline btn-elder" pendingText="Saving...">
-                <AlarmClock className="h-6 w-6" aria-hidden /> Remind me in 15 min
-              </SubmitButton>
-            </form>
+            <div className="space-y-3">
+              <form action={markDose}>
+                <input type="hidden" name="medicationId" value={current.medication.id} />
+                <input type="hidden" name="date" value={current.date} />
+                <input type="hidden" name="time" value={current.time} />
+                <input type="hidden" name="action" value="taken" />
+                <SubmitButton className="btn-primary btn-elder text-2xl" pendingText="Saving...">
+                  <CheckCircle2 className="h-7 w-7" aria-hidden /> I took it
+                </SubmitButton>
+              </form>
+              <form action={markDose}>
+                <input type="hidden" name="medicationId" value={current.medication.id} />
+                <input type="hidden" name="date" value={current.date} />
+                <input type="hidden" name="time" value={current.time} />
+                <input type="hidden" name="action" value="snooze" />
+                <SubmitButton className="btn-outline btn-elder" pendingText="Saving...">
+                  <AlarmClock className="h-6 w-6" aria-hidden /> Remind me in 15 min
+                </SubmitButton>
+              </form>
+            </div>
             <Link href={`/elder/skip?med=${current.medication.id}&date=${current.date}&time=${current.time}`} className="block py-2 text-center text-elder-body text-primary-soft underline underline-offset-4">
               I can&apos;t take it now
             </Link>

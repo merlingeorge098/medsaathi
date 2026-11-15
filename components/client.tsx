@@ -5,11 +5,26 @@ import { useFormStatus } from "react-dom";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Phone, Siren, Volume2, X } from "lucide-react";
 
-/** Submit button that disables itself and announces progress while a server action runs. */
+/**
+ * Submit button that announces progress while a server action runs.
+ * It ignores repeat clicks while pending instead of using `disabled`: a disabled
+ * submitter is dropped from the form data, which would lose the button's name/value.
+ */
 export function SubmitButton({ children, className, pendingText = "Saving...", name, value, ariaLabel }: { children: ReactNode; className?: string; pendingText?: string; name?: string; value?: string; ariaLabel?: string }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" name={name} value={value} disabled={pending} aria-busy={pending} aria-label={ariaLabel} className={className}>
+    <button
+      type="submit"
+      name={name}
+      value={value}
+      aria-disabled={pending}
+      aria-busy={pending}
+      aria-label={ariaLabel}
+      onClick={(e) => {
+        if (pending) e.preventDefault();
+      }}
+      className={clsx(className, pending && "cursor-wait opacity-60")}
+    >
       {pending ? pendingText : children}
     </button>
   );

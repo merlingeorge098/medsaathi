@@ -52,12 +52,19 @@ export default async function ApprovalsPage() {
               <Side title="After" med={after} />
             </div>
             {c.note ? <blockquote className="border-l-4 border-clay-strong pl-4 text-elder-body italic">&ldquo;{c.note}&rdquo;</blockquote> : null}
-            <form action={decideChange} className="space-y-3">
-              <input type="hidden" name="id" value={c.id} />
-              <SubmitButton name="decision" value="approved" className="btn-primary btn-elder">Yes, okay</SubmitButton>
-              <SubmitButton name="decision" value="declined" className="btn-outline btn-elder">No, keep it</SubmitButton>
-              <SubmitButton name="decision" value="later" className="btn-ghost btn-elder">Ask me later</SubmitButton>
-            </form>
+            <div className="space-y-3">
+              {([
+                { decision: "approved", label: "Yes, okay", cls: "btn-primary btn-elder" },
+                { decision: "declined", label: "No, keep it", cls: "btn-outline btn-elder" },
+                { decision: "later", label: "Ask me later", cls: "btn-ghost btn-elder" },
+              ] as const).map((o) => (
+                <form key={o.decision} action={decideChange}>
+                  <input type="hidden" name="id" value={c.id} />
+                  <input type="hidden" name="decision" value={o.decision} />
+                  <SubmitButton className={o.cls}>{o.label}</SubmitButton>
+                </form>
+              ))}
+            </div>
             <p className="text-base text-muted">Asked by {c.requestedByName}, {formatDateTime(c.createdAt)}</p>
           </section>
         );
@@ -83,10 +90,13 @@ export default async function ApprovalsPage() {
                 </label>
               ))}
             </fieldset>
-            <div className="grid grid-cols-2 gap-3">
-              <SubmitButton name="decision" value="allow" className="btn-primary btn-elder">Allow</SubmitButton>
-              <SubmitButton name="decision" value="deny" className="btn-outline btn-elder">Don&apos;t allow</SubmitButton>
-            </div>
+            <input type="hidden" name="decision" value="allow" />
+            <SubmitButton className="btn-primary btn-elder">Allow</SubmitButton>
+          </form>
+          <form action={decideMember} className="mt-3">
+            <input type="hidden" name="id" value={m.id} />
+            <input type="hidden" name="decision" value="deny" />
+            <SubmitButton className="btn-outline btn-elder">Don&apos;t allow</SubmitButton>
           </form>
         </section>
       ))}

@@ -105,7 +105,8 @@ export default async function CircleToday({ searchParams }: { searchParams: Prom
                       <input type="hidden" name="medicationId" value={d.medication.id} />
                       <input type="hidden" name="date" value={d.date} />
                       <input type="hidden" name="time" value={d.time} />
-                      <SubmitButton name="action" value="taken" className="btn-outline px-4 py-2 text-sm" ariaLabel={`Mark ${d.medication.name} as taken for ${name}`}>Mark taken</SubmitButton>
+                      <input type="hidden" name="action" value="taken" />
+                      <SubmitButton className="btn-outline px-4 py-2 text-sm" ariaLabel={`Mark ${d.medication.name} as taken for ${name}`}>Mark taken</SubmitButton>
                     </form>
                   ) : null}
                 </li>
