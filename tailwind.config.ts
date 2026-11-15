@@ -23,14 +23,6 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['"Atkinson Hyperlegible Next"', '"Atkinson Hyperlegible"', "system-ui", "sans-serif"],
-        display: ['"Fraunces"', "Georgia", "serif"],
-      },
-      keyframes: {
-        float: { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-10px)" } },
-      },
-      animation: {
-        float: "float 6s ease-in-out infinite",
-        "float-slow": "float 8s ease-in-out 1.5s infinite",
       },
       fontSize: {
         "elder-body": ["1.25rem", { lineHeight: "1.9rem" }],

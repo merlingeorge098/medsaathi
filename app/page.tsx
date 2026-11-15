@@ -1,48 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, CalendarDays, Check, KeyRound, Mail, MessageCircleHeart, ShieldCheck, Sparkles, User, Users } from "lucide-react";
+import { ArrowRight, BellRing, CalendarDays, Camera, HeartPulse, KeyRound, Mail, ShieldCheck, User, Users } from "lucide-react";
 import { demoLogin } from "./actions/auth";
 import { getSession } from "@/lib/session";
 import { SubmitButton } from "@/components/client";
-import { PillArt } from "@/components/ui";
-
-/** Capsule mark: one half teal (the elder), one half clay (the family). */
-function Mark({ size = 34 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true">
-      <g transform="rotate(-40 20 20)">
-        <rect x="4" y="13" width="32" height="14" rx="7" fill="#1e6b62" />
-        <path d="M20 13h9a7 7 0 0 1 0 14h-9z" fill="#c46a3f" />
-        <path d="M24 17.5c1.2-1.4 3.4-1 3.6.8.2 1.6-1.9 2.9-3.6 4.2-1.7-1.3-3.8-2.6-3.6-4.2.2-1.8 2.4-2.2 3.6-.8z" fill="#fff" />
-      </g>
-    </svg>
-  );
-}
-
-function DemoButtons({ tone = "light" }: { tone?: "light" | "dark" }) {
-  return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      <form action={demoLogin}>
-        <input type="hidden" name="as" value="elder" />
-        <SubmitButton className="btn-primary btn-elder shadow-lg shadow-primary/20" pendingText="Opening...">
-          See Baba&apos;s view <ArrowRight className="h-5 w-5" aria-hidden />
-        </SubmitButton>
-      </form>
-      <form action={demoLogin}>
-        <input type="hidden" name="as" value="family" />
-        <SubmitButton className={tone === "dark" ? "btn btn-elder border-2 border-white/70 text-white hover:bg-white/10" : "btn-outline btn-elder"} pendingText="Opening...">
-          See Rahul&apos;s view
-        </SubmitButton>
-      </form>
-    </div>
-  );
-}
+import familyGarden from "../public/images/family-garden.jpg";
+import pillsAtHome from "../public/images/pills-at-home.jpg";
+import grandfatherGrandson from "../public/images/grandfather-grandson.jpg";
+import appElder from "../public/images/app-elder.jpg";
+import appCircle from "../public/images/app-circle.jpg";
 
 const LADDER = [
-  { time: "1:50 PM", who: "Baba", what: "A gentle heads-up", tone: "bg-primary-tint text-primary" },
-  { time: "2:00 PM", who: "Baba", what: "“Time for your medicine” with one-tap buttons", tone: "bg-primary-tint text-primary" },
-  { time: "2:30 PM", who: "Rahul", what: "Email: Mark as taken or Snooze, right from the inbox", tone: "bg-due-soft text-due" },
-  { time: "3:00 PM", who: "Whole family", what: "Someone calls or drops by", tone: "bg-clay-soft text-clay" },
+  { time: "10 min before", who: "Baba", what: "A gentle heads-up that a dose is coming." },
+  { time: "At dose time", who: "Baba", what: "“Time for your medicine”, with one-tap buttons." },
+  { time: "+30 min", who: "Primary caretaker", what: "An email with Mark as taken and Snooze inside it." },
+  { time: "+60 min", who: "Whole family", what: "Everyone is told, so someone can call or visit." },
 ];
 
 export default async function Home() {
@@ -50,184 +23,180 @@ export default async function Home() {
   if (session) redirect(session.role === "owner" ? "/elder" : "/circle");
 
   return (
-    <div className="overflow-x-hidden">
-      {/* ------------------------------ Nav ------------------------------ */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-        <p className="flex items-center gap-2 text-xl font-bold text-primary">
-          <Mark /> MedSaathi
-        </p>
-        <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2">
-          <Link href="/join" className="btn-ghost btn-md hidden sm:inline-flex"><KeyRound className="h-4 w-4" aria-hidden /> I have a Care Code</Link>
-          <Link href="/login" className="btn-outline px-5 py-2 text-base">Log in</Link>
-        </nav>
-      </header>
-
+    <>
       <main id="main">
-        {/* ------------------------------ Hero ------------------------------ */}
-        <section className="relative mx-auto grid max-w-6xl gap-12 px-5 pb-20 pt-8 md:pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[34rem] w-[34rem] rounded-full bg-primary-tint/50 blur-3xl" />
-          <div aria-hidden="true" className="pointer-events-none absolute -left-32 bottom-0 -z-10 h-72 w-72 rounded-full bg-clay-soft/70 blur-3xl" />
+        {/* Hero: full-bleed photo */}
+        <section className="relative isolate flex min-h-[92vh] flex-col overflow-hidden bg-ink text-white">
+          <div className="absolute inset-0 -z-10 lg:left-[38%]">
+            <Image
+              src={familyGarden}
+              alt="Grandparents laughing with their grandchild in a garden"
+              priority
+              placeholder="blur"
+              fill
+              sizes="(min-width: 1024px) 62vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/70 to-ink/20 lg:bg-gradient-to-r lg:from-ink lg:from-[38%] lg:via-ink/20 lg:via-[52%] lg:to-transparent" />
 
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-clay/20 bg-card/80 px-4 py-1.5 text-sm font-semibold text-clay">
-              <span lang="hi">दवा · परिवार</span> <span className="text-line">|</span> Elder-first medicine care
+          <header className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-6">
+            <p className="flex items-center gap-2 text-xl font-bold">
+              <HeartPulse className="h-6 w-6 text-primary-tint" aria-hidden /> MedSaathi
             </p>
-            <h1 className="mt-6 font-display text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
-              Dawa time pe,
-              <br />
-              <span className="italic text-primary-soft">parivaar</span> saath mein.
-            </h1>
-            <p className="mt-6 max-w-xl text-elder-body text-muted">
-              Medicines, doctor visits and reminders for your parents, shared with the whole family.
-              <strong className="font-semibold text-ink"> The family helps. The elder decides.</strong>
-            </p>
+            <nav aria-label="Account" className="flex items-center gap-2">
+              <Link href="/join" className="hidden rounded-full px-4 py-2 font-semibold text-white/90 hover:bg-white/10 sm:inline-flex">I have a Care Code</Link>
+              <Link href="/login" className="rounded-full border-2 border-white/80 px-5 py-2 font-semibold hover:bg-white hover:text-ink">Log in</Link>
+            </nav>
+          </header>
 
-            <div className="mt-8 max-w-xl">
-              <DemoButtons />
-              <p className="mt-3 text-sm text-outline">
-                Opens a demo family with 30 days of history. Or log in with Care Code <span className="font-mono font-bold text-primary">482915</span>, PIN <span className="font-mono font-bold text-primary">1234</span>.
+          <div className="mx-auto flex w-full max-w-6xl flex-1 items-end px-6 pb-12 pt-24 lg:items-center lg:pb-20">
+            <div className="max-w-2xl">
+              <p className="text-lg font-semibold text-clay-soft">Medicine care for elders and their families</p>
+              <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+                Dawa time pe, parivaar saath mein.
+              </h1>
+              <p className="mt-6 max-w-xl text-elder-body text-white/85">
+                Reminders, medicines and doctor visits for your parents, shared with the whole family. <span className="font-bold text-white">The family helps. The elder decides.</span>
               </p>
+              <div className="mt-9 grid max-w-xl gap-3 sm:grid-cols-2">
+                <form action={demoLogin}>
+                  <input type="hidden" name="as" value="elder" />
+                  <SubmitButton className="btn btn-elder bg-clay-strong text-white hover:bg-clay" pendingText="Opening...">See Baba&apos;s view <ArrowRight className="h-5 w-5" aria-hidden /></SubmitButton>
+                </form>
+                <form action={demoLogin}>
+                  <input type="hidden" name="as" value="family" />
+                  <SubmitButton className="btn btn-elder border-2 border-white text-white hover:bg-white hover:text-ink" pendingText="Opening...">See Rahul&apos;s view</SubmitButton>
+                </form>
+              </div>
+              <p className="mt-4 text-sm text-white/70">Opens a demo family with 30 days of history. Care Code 482915, elder PIN 1234.</p>
             </div>
           </div>
 
-          {/* Phone mock-up of the real Elder Mode screen */}
-          <div className="relative mx-auto w-full max-w-[22rem]" aria-label="Preview of Baba's screen" role="img">
-            <div className="rotate-[2deg] rounded-[2.75rem] border-[10px] border-ink bg-surface p-5 shadow-2xl shadow-primary/25">
-              <div className="mx-auto mb-4 h-1.5 w-20 rounded-full bg-ink/80" />
-              <p className="font-display text-3xl text-ink">Namaste, Baba ji</p>
-              <p className="text-sm text-muted">Sunday afternoon</p>
-              <div className="mt-5 rounded-3xl bg-card p-5 shadow-sm ring-1 ring-line/60">
-                <p className="eyebrow">Time for your medicine</p>
-                <div className="mt-3 flex items-center gap-3">
-                  <PillArt shape="Round" color="Yellow" size={60} />
-                  <div>
-                    <p className="text-xl font-bold">Amlodipine 5 mg</p>
-                    <p className="text-sm text-muted">1 tablet · after lunch</p>
-                  </div>
-                </div>
-                <div className="mt-5 flex min-h-elder items-center justify-center gap-2 rounded-full bg-primary-soft text-lg font-semibold text-white">
-                  <Check className="h-6 w-6" /> I took it
-                </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-sm font-semibold text-primary-soft">
-                  <div className="rounded-full border-2 border-primary-soft/40 py-2.5 text-center">In 15 min</div>
-                  <div className="rounded-full border-2 border-primary-soft/40 py-2.5 text-center">Skip</div>
-                </div>
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-semibold text-primary-soft">
-                <span className="rounded-xl bg-primary-tint/60 py-2">Today</span>
-                <span className="py-2">Doctor</span>
-                <span className="py-2">My Family</span>
-              </div>
-            </div>
+          <div className="border-t border-white/15 bg-ink/40">
+            <ul className="mx-auto grid max-w-6xl gap-4 px-6 py-5 text-base font-semibold sm:grid-cols-3">
+              <li className="flex items-center gap-3"><Camera className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Snap a prescription, Gemini reads it</li>
+              <li className="flex items-center gap-3"><BellRing className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Missed dose? The family is emailed</li>
+              <li className="flex items-center gap-3"><ShieldCheck className="h-5 w-5 shrink-0 text-clay-soft" aria-hidden /> Baba approves every change</li>
+            </ul>
+          </div>
+        </section>
 
-            <div className="animate-float absolute -left-6 -top-10 hidden w-60 rounded-2xl bg-card p-3 shadow-xl ring-1 ring-line/60 sm:block lg:-left-40">
-              <p className="flex items-center gap-2 text-sm font-bold"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-taken-soft text-taken"><Check className="h-4 w-4" /></span> 8:30 dose taken</p>
-              <p className="mt-1 text-xs text-muted">Rahul saw it from office. No call needed.</p>
+        {/* Real product on deep teal */}
+        <section aria-labelledby="product" className="bg-primary text-white">
+          <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+            <div className="grid gap-6 md:grid-cols-2 md:items-end">
+              <h2 id="product" className="text-4xl font-bold tracking-tight sm:text-5xl">One profile.<br />Two views.</h2>
+              <p className="text-lg text-white/80">Baba sees one thing at a time, in large text. The family sees everything at a glance. Same data, kept in sync.</p>
             </div>
-            <div className="animate-float-slow absolute -bottom-10 -right-4 hidden w-64 rounded-2xl bg-card p-3 shadow-xl ring-1 ring-line/60 sm:block lg:-right-24">
-              <p className="flex items-center gap-2 text-sm font-bold"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-clay-soft text-clay"><ShieldCheck className="h-4 w-4" /></span> Priya suggested a change</p>
-              <p className="mt-1 text-xs text-muted">Amlodipine 5 mg → 2.5 mg. <span className="font-semibold text-clay">Baba decides.</span></p>
+            <div className="mt-12 grid items-start gap-8 md:grid-cols-[1fr_2.4fr]">
+              <figure>
+                <Image src={appElder} alt="Elder Mode on a phone: greeting, a pending approval from Rahul, and today's medicine" placeholder="blur" sizes="(min-width: 768px) 300px, 100vw" className="w-full rounded-2xl shadow-2xl shadow-black/30" />
+                <figcaption className="mt-4"><span className="font-bold">Elder Mode</span> <span className="text-white/70">· big buttons, one action at a time</span></figcaption>
+              </figure>
+              <figure>
+                <Image src={appCircle} alt="Circle Mode dashboard: today's doses, 7-day adherence, next visit, refill warning and timeline" placeholder="blur" sizes="(min-width: 768px) 760px, 100vw" className="w-full rounded-2xl shadow-2xl shadow-black/30" />
+                <figcaption className="mt-4"><span className="font-bold">Circle Mode</span> <span className="text-white/70">· doses, adherence, visits and refills</span></figcaption>
+              </figure>
             </div>
           </div>
         </section>
 
-        {/* ------------------------------ 1-0-1 ------------------------------ */}
-        <section aria-labelledby="rx" className="border-y border-line/60 bg-card">
-          <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+        {/* Prescriptions on warm cream */}
+        <section aria-labelledby="rx" className="bg-[#fbf1e8]">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
+            <Image src={pillsAtHome} alt="An elderly man sorting tablets into a pill organiser at home" placeholder="blur" sizes="(min-width: 768px) 560px, 100vw" className="aspect-square w-full rounded-2xl object-cover" />
             <div>
-              <p className="eyebrow">Write it like the doctor does</p>
-              <h2 id="rx" className="mt-3 font-display text-4xl leading-tight">From doctor&apos;s shorthand to a daily plan.</h2>
-              <p className="mt-4 text-lg text-muted">
-                Type the prescription the way Indian doctors write it, or <strong className="font-semibold text-ink">snap a photo and Gemini reads it</strong>. MedSaathi turns it into reminders and counts how many days of tablets are left.
-              </p>
+              <p className="text-base font-bold text-clay">Prescriptions</p>
+              <h2 id="rx" className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Write it the way the doctor does.</h2>
+              <p className="mt-5 text-lg text-muted">Type it as Indian doctors write it, or take a photo and Gemini reads it. MedSaathi turns it into a daily schedule and counts the tablets left.</p>
+              <dl className="mt-8 divide-y divide-clay/15 rounded-2xl bg-card shadow-sm ring-1 ring-clay/15">
+                <div className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <dt className="text-muted">You type</dt>
+                  <dd className="font-mono text-lg font-bold">Metformin 500, <span className="rounded bg-clay-soft px-1.5 text-clay">1-0-1</span>, after food</dd>
+                </div>
+                <div className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <dt className="text-muted">Reminders</dt>
+                  <dd className="text-lg font-bold">8:30 AM and 9:00 PM</dd>
+                </div>
+                <div className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <dt className="text-muted">Refill</dt>
+                  <dd className="text-lg font-bold text-clay">Warned 5 days before it runs out</dd>
+                </div>
+              </dl>
             </div>
-            <div className="rounded-3xl bg-surface-low p-5 ring-1 ring-line/60 sm:p-7">
-              <p className="rounded-2xl border-2 border-dashed border-line bg-card px-5 py-4 font-mono text-lg sm:text-xl">
-                Tab. Metformin 500 <span className="rounded bg-due-soft px-1.5 font-bold text-due">1-0-1</span> <span className="text-clay">after food</span>
-              </p>
-              <div className="my-4 flex items-center gap-2 pl-2 text-sm font-semibold text-primary-soft">
-                <Sparkles className="h-5 w-5" aria-hidden /> becomes
-              </div>
-              <ul className="grid gap-3 sm:grid-cols-3">
+          </div>
+        </section>
+
+        {/* Elder decides */}
+        <section aria-labelledby="decides" className="bg-card">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
+            <div className="md:order-2">
+              <Image src={grandfatherGrandson} alt="A grandfather feeding his grandson" placeholder="blur" sizes="(min-width: 768px) 560px, 100vw" className="aspect-square w-full rounded-2xl object-cover" />
+            </div>
+            <div className="md:order-1">
+              <p className="text-base font-bold text-primary-soft">Dignity first</p>
+              <h2 id="decides" className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">The elder decides.</h2>
+              <p className="mt-5 text-lg text-muted">Family can suggest. Only Baba applies. Every change is a request he approves, and every action is logged with who made it.</p>
+              <ul className="mt-8 space-y-6">
                 {[
-                  { k: "Morning", v: "8:30 AM", on: true },
-                  { k: "Afternoon", v: "None", on: false },
-                  { k: "Night", v: "9:00 PM", on: true },
-                ].map((d) => (
-                  <li key={d.k} className={d.on ? "rounded-2xl bg-primary-soft p-4 text-white" : "rounded-2xl border border-line bg-card p-4 text-outline"}>
-                    <p className="text-sm opacity-80">{d.k}</p>
-                    <p className="text-2xl font-bold">{d.v}</p>
-                    {d.on ? <p className="text-sm opacity-80">after food</p> : <p className="text-sm">no dose</p>}
+                  { icon: ShieldCheck, title: "Medicine changes need his yes", text: "Rahul suggests a new dose. Baba sees it in plain words and says yes or no." },
+                  { icon: Users, title: "He chooses who joins", text: "New family members wait until Baba lets them in and picks their role." },
+                  { icon: CalendarDays, title: "Ready for the doctor", text: "Visits with a carry list, questions to ask and a Gemini summary of the month." },
+                ].map(({ icon: Icon, title, text }) => (
+                  <li key={title} className="flex gap-4">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-white"><Icon className="h-6 w-6" aria-hidden /></span>
+                    <span>
+                      <span className="block text-lg font-bold">{title}</span>
+                      <span className="text-base text-muted">{text}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-sm text-muted">30 tablets left · <span className="font-semibold text-clay">refill reminder in 10 days</span></p>
             </div>
           </div>
         </section>
 
-        {/* ------------------------------ Escalation ------------------------------ */}
-        <section aria-labelledby="ladder" className="relative bg-ink text-white">
-          <div aria-hidden="true" className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-primary/40 to-transparent" />
-          <div className="relative mx-auto max-w-6xl px-5 py-20">
-            <p className="text-xs font-bold uppercase tracking-wider text-clay-soft">If a dose is missed</p>
-            <h2 id="ladder" className="mt-3 max-w-2xl font-display text-4xl leading-tight sm:text-5xl">Reminders that escalate, gently.</h2>
-            <p className="mt-4 max-w-2xl text-lg text-white/75">Not spam. Each step happens only if the dose still isn&apos;t marked as taken, so the right person hears at the right time.</p>
-
-            <ol className="mt-12 grid gap-4 md:grid-cols-4">
+        {/* Escalation on ink */}
+        <section aria-labelledby="ladder" className="bg-ink text-white">
+          <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+            <div className="grid gap-6 md:grid-cols-2 md:items-end">
+              <h2 id="ladder" className="text-4xl font-bold tracking-tight sm:text-5xl">When a dose is missed.</h2>
+              <p className="text-lg text-white/75">Each step only happens if the dose still isn&apos;t marked as taken. The right person hears at the right time, and nobody gets spammed.</p>
+            </div>
+            <ol className="mt-12 grid gap-px overflow-hidden rounded-2xl bg-white/15 md:grid-cols-4">
               {LADDER.map((s, i) => (
-                <li key={s.time} className="relative rounded-3xl bg-white/[0.06] p-5 ring-1 ring-white/10">
-                  <div className="flex items-center justify-between">
-                    <span className={`rounded-full px-3 py-1 text-sm font-bold ${s.tone}`}>{s.time}</span>
-                    <span className="font-display text-4xl text-white/20">{i + 1}</span>
-                  </div>
-                  <p className="mt-4 text-lg font-bold">{s.who}</p>
-                  <p className="mt-1 text-white/70">{s.what}</p>
+                <li key={s.time} className="bg-ink p-6 md:p-7">
+                  <p className="text-6xl font-bold leading-none text-clay-strong">{i + 1}</p>
+                  <p className="mt-5 text-sm font-bold uppercase tracking-wider text-white/60">{s.time}</p>
+                  <p className="mt-1 text-xl font-bold">{s.who}</p>
+                  <p className="mt-2 text-white/70">{s.what}</p>
                 </li>
               ))}
             </ol>
-            <p className="mt-6 flex items-start gap-2 text-sm text-white/60"><Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden /><span>Real emails via Gmail. Tap <span className="font-semibold text-white">Mark as taken</span> inside the email, no login needed.</span></p>
+            <p className="mt-5 flex items-start gap-2 text-white/70"><Mail className="mt-0.5 h-5 w-5 shrink-0" aria-hidden /> Sent by Gmail. The buttons inside the email work without logging in.</p>
           </div>
         </section>
 
-        {/* ------------------------------ Principles ------------------------------ */}
-        <section aria-labelledby="why" className="mx-auto max-w-6xl px-5 py-20">
-          <p className="eyebrow">Why families pick it</p>
-          <h2 id="why" className="mt-3 max-w-2xl font-display text-4xl leading-tight">Built around Baba, not around the app.</h2>
-          <ul className="mt-10 grid gap-5 md:grid-cols-3">
-            {[
-              { icon: ShieldCheck, title: "The elder stays in charge", text: "When family changes a medicine, Baba sees it and says yes or no. Nothing changes behind his back.", tint: "bg-primary-tint text-primary" },
-              { icon: MessageCircleHeart, title: "Missed is information", text: "A skipped dose asks why: forgot, unwell, ran out, side effects. The doctor sees patterns, not guilt.", tint: "bg-clay-soft text-clay" },
-              { icon: CalendarDays, title: "Visits, sorted", text: "Who takes Baba, what to carry, what to ask, plus a one-page Gemini summary for the doctor.", tint: "bg-due-soft text-due" },
-            ].map(({ icon: Icon, title, text, tint }) => (
-              <li key={title} className="group rounded-3xl bg-card p-6 ring-1 ring-line/60 transition-transform hover:-translate-y-1">
-                <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${tint}`}><Icon className="h-7 w-7" aria-hidden /></span>
-                <p className="mt-5 text-xl font-bold">{title}</p>
-                <p className="mt-2 text-base text-muted">{text}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ------------------------------ Start ------------------------------ */}
-        <section aria-labelledby="start" className="mx-auto max-w-6xl px-5 pb-20">
-          <div className="grid gap-8 overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary-soft to-primary p-8 text-white sm:p-12 lg:grid-cols-2 lg:items-center">
+        {/* Start on terracotta */}
+        <section aria-labelledby="start" className="bg-clay text-white">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2 md:py-24 lg:gap-16">
             <div>
-              <h2 id="start" className="font-display text-4xl leading-tight sm:text-5xl">Start your family&apos;s care circle.</h2>
-              <p className="mt-4 text-lg text-white/80">Free, takes two minutes, and works on any phone. Everyone joins with one 6-digit Care Code.</p>
+              <h2 id="start" className="text-4xl font-bold tracking-tight sm:text-5xl">Start your family&apos;s care circle.</h2>
+              <p className="mt-5 text-lg text-white/85">Free, and works on any phone. The whole family joins with one 6-digit Care Code.</p>
             </div>
             <div className="space-y-3">
               <Link href="/start?for=self" className="flex items-center gap-4 rounded-2xl bg-white p-5 text-ink transition-transform hover:-translate-y-0.5">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-tint text-primary"><User className="h-6 w-6" aria-hidden /></span>
                 <span className="flex-1"><span className="block text-lg font-bold">For me</span><span className="text-muted">I want to manage my own medicines</span></span>
-                <ArrowRight className="h-5 w-5 text-primary-soft" aria-hidden />
+                <ArrowRight className="h-5 w-5 text-clay" aria-hidden />
               </Link>
               <Link href="/start?for=other" className="flex items-center gap-4 rounded-2xl bg-white p-5 text-ink transition-transform hover:-translate-y-0.5">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-clay-soft text-clay"><Users className="h-6 w-6" aria-hidden /></span>
                 <span className="flex-1"><span className="block text-lg font-bold">For someone I care for</span><span className="text-muted">I&apos;m a family member or caretaker</span></span>
-                <ArrowRight className="h-5 w-5 text-primary-soft" aria-hidden />
+                <ArrowRight className="h-5 w-5 text-clay" aria-hidden />
               </Link>
-              <Link href="/join" className="flex items-center justify-center gap-2 rounded-2xl border-2 border-white/40 p-4 font-semibold hover:bg-white/10">
+              <Link href="/join" className="flex items-center justify-center gap-2 rounded-2xl border-2 border-white/60 p-4 font-semibold hover:bg-white/10">
                 <KeyRound className="h-5 w-5" aria-hidden /> I have a Care Code
               </Link>
             </div>
@@ -235,12 +204,12 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-line/60 bg-card">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm text-muted md:flex-row md:items-center md:justify-between">
-          <p className="flex items-center gap-2 font-bold text-primary"><Mark size={24} /> MedSaathi</p>
-          <p>Built with Cloud Firestore · Gemini · Gmail · Google Calendar · Google Maps</p>
+      <footer className="bg-ink text-white/70">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-8 text-sm md:flex-row md:justify-between">
+          <p><span className="font-bold text-white">MedSaathi</span> · Built with Cloud Firestore, Gemini, Gmail, Google Calendar and Google Maps</p>
+          <p>Photos from <a className="underline hover:text-white" href="https://www.pexels.com" rel="noopener noreferrer" target="_blank">Pexels</a></p>
         </div>
       </footer>
-    </div>
+    </>
   );
 }
