@@ -25,7 +25,7 @@ The landing page has **See Baba's view** and **See Rahul's view** buttons that o
 
 - Care Code `482915`, elder PIN `1234`
 - Family login: `rahul.demo@medsaathi.app`, passcode `2468`
-- In Circle Mode, go to **Reminders** and use **Send me a live missed-dose alert** to receive the real email.
+- In Circle Mode, go to **Reminders** and use **Try a missed-dose email** to receive the real email.
 
 ## Google services used
 

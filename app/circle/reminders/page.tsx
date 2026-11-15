@@ -22,14 +22,14 @@ export default async function RemindersPage() {
         <div className="space-y-6">
           <ReminderTools />
           <section aria-labelledby="outbox" className="card p-5">
-            <SectionTitle><span id="outbox">Email outbox</span></SectionTitle>
-            {!emailConfigured() ? <div className="mb-3"><Notice tone="warn">Email delivery is not configured, so emails are recorded here only.</Notice></div> : null}
-            {outbox.length === 0 ? <p className="text-base text-muted">No emails yet. Run the reminder check or send a test alert.</p> : (
+            <SectionTitle><span id="outbox">Recent reminders</span></SectionTitle>
+            {!emailConfigured() ? <div className="mb-3"><Notice tone="warn">Email sending is switched off, so reminders are saved here instead.</Notice></div> : null}
+            {outbox.length === 0 ? <p className="text-base text-muted">No reminders sent yet. They will appear here when a dose is due or missed.</p> : (
               <ul className="divide-y divide-line/60">
                 {outbox.map((m) => (
                   <li key={m.id} className="py-3">
                     <p className="font-semibold">{m.subject}</p>
-                    <p className="text-sm text-muted">To {m.to}, {relativeTime(m.at)}, {m.delivered ? "delivered" : "recorded"}</p>
+                    <p className="text-sm text-muted">To {m.to}, {relativeTime(m.at)}, {m.delivered ? "delivered" : "saved, not emailed"}</p>
                   </li>
                 ))}
               </ul>

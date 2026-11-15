@@ -388,20 +388,20 @@ export function ReminderTools() {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <form action={testAction} className="card space-y-3 p-5">
-        <p className="text-lg font-bold">Send me a live missed-dose alert</p>
-        <p className="text-base text-muted">Get the real email. Its buttons update this dashboard without logging in.</p>
+        <p className="text-lg font-bold">Try a missed-dose email</p>
+        <p className="text-base text-muted">See exactly what your family receives. Tap &quot;Mark as taken&quot; or &quot;Snooze&quot; right inside the email, no login needed.</p>
         <label className="block">
           <span className="sr-only">Your email</span>
           <input name="email" type="email" required className="field" placeholder="you@example.com" autoComplete="email" />
         </label>
         <Feedback state={testState} />
-        <SubmitButton className="btn-primary btn-md min-h-12" pendingText="Sending...">Send test alert</SubmitButton>
+        <SubmitButton className="btn-primary btn-md min-h-12" pendingText="Sending...">Send sample email</SubmitButton>
       </form>
       <form action={runAction} className="card space-y-3 p-5">
-        <p className="text-lg font-bold">Run the reminder check now</p>
-        <p className="text-base text-muted">A scheduler runs this every 5 minutes. Run it by hand to see which emails go out.</p>
+        <p className="text-lg font-bold">Check doses now</p>
+        <p className="text-base text-muted">MedSaathi checks every dose automatically every 5 minutes. Tap to check right away and send any reminders that are due.</p>
         <Feedback state={runState} />
-        <SubmitButton className="btn-outline btn-md min-h-12" pendingText="Checking...">Run reminder check</SubmitButton>
+        <SubmitButton className="btn-outline btn-md min-h-12" pendingText="Checking...">Check now</SubmitButton>
       </form>
     </div>
   );
