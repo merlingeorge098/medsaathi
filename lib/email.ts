@@ -69,7 +69,7 @@ export function emailLayout(opts: { heading: string; lines: string[]; card?: { t
   const buttons = (opts.buttons ?? [])
     .map(
       (b) =>
-        `<a href="${b.href}" style="display:inline-block;margin:6px 8px 6px 0;padding:14px 22px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;${
+        `<a href="${escape(b.href)}" style="display:inline-block;margin:6px 8px 6px 0;padding:14px 22px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;${
           b.primary ? "background:#1e6b62;color:#ffffff;" : "background:#ffffff;color:#1e6b62;border:2px solid #1e6b62;"
         }">${escape(b.label)}</a>`,
     )

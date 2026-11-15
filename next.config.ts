@@ -10,6 +10,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  outputFileTracingRoot: process.cwd(),
   devIndicators: false,
   serverExternalPackages: ["firebase-admin"],
   experimental: { serverActions: { bodySizeLimit: "6mb" } },
