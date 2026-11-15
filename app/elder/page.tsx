@@ -5,7 +5,8 @@ import { elderName, loadCareData } from "@/lib/care";
 import { buildToday } from "@/lib/today";
 import { formatDate, formatTime, localNow, slotLabel } from "@/lib/time";
 import { markDose } from "@/app/actions/care";
-import { SubmitButton } from "@/components/client";
+import { ReadAloud, SubmitButton } from "@/components/client";
+import { doseSpeech, nextDoseSpeech } from "@/lib/voice";
 import { Notice, PillArt, StatusBadge } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
@@ -73,6 +74,9 @@ export default async function ElderToday({ searchParams }: { searchParams: Promi
             <p className="flex items-center gap-3 rounded-xl bg-surface-low p-4 text-base">
               <GlassWater className="h-6 w-6 shrink-0 text-primary-soft" aria-hidden /> Have a full glass of water with it.
             </p>
+            <ReadAloud
+              {...doseSpeech({ elderName: name, medicine: current.medication.name, strength: current.medication.strength, tablets: current.medication.dosePerTime, food: current.medication.food })}
+            />
             <form action={markDose} className="space-y-3">
               <input type="hidden" name="medicationId" value={current.medication.id} />
               <input type="hidden" name="date" value={current.date} />
@@ -96,6 +100,14 @@ export default async function ElderToday({ searchParams }: { searchParams: Promi
               {today.taken} of {today.doses.length} medicines taken today.
               {today.later[0] ? ` Next: ${today.later[0].medication.name} at ${formatTime(today.later[0].time)}.` : " All done for today."}
             </p>
+            <div className="mt-2 w-full">
+              <ReadAloud
+                {...nextDoseSpeech(
+                  name,
+                  today.later[0] ? { medicine: today.later[0].medication.name, strength: today.later[0].medication.strength, time: formatTime(today.later[0].time) } : undefined,
+                )}
+              />
+            </div>
           </div>
         )}
       </section>

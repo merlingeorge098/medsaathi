@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { AlertTriangle, CalendarDays, Phone, Pill, ShoppingCart } from "lucide-react";
+import { AlertTriangle, CalendarDays, MessageCircle, Phone, Pill, ShoppingCart } from "lucide-react";
+import { dailyUpdateText, whatsappLink } from "@/lib/share";
+import { appUrl } from "@/lib/email";
 import { requireSession } from "@/lib/session";
 import { elderName, loadCareData } from "@/lib/care";
 import { buildToday } from "@/lib/today";
@@ -39,7 +41,19 @@ export default async function CircleToday({ searchParams }: { searchParams: Prom
       <PageHeader
         eyebrow={`Care circle, ${formatDate(today.date)}`}
         title={`${name}'s day`}
-        actions={tel ? <a href={tel} className="btn-outline btn-md"><Phone className="h-4 w-4" aria-hidden /> Call {name}</a> : null}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={whatsappLink(dailyUpdateText(name, formatDate(today.date), today.doses, appUrl()))}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-md bg-[#1f8f4e] text-white hover:bg-[#187540]"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden /> Send today&apos;s update on WhatsApp
+            </a>
+            {tel ? <a href={tel} className="btn-outline btn-md"><Phone className="h-4 w-4" aria-hidden /> Call {name}</a> : null}
+          </div>
+        }
       />
       {params.welcome ? <div className="mb-6"><Notice tone="success">Care circle created. Share the Care Code {data.profile.careCode} with family, then add medicines.</Notice></div> : null}
 

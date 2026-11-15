@@ -133,6 +133,56 @@ export function CopyButton({ text, label = "Copy" }: { text: string; label?: str
   );
 }
 
+/** Speaks the current dose aloud in Hindi or English using the phone's built-in voice. */
+export function ReadAloud({ en, hi }: { en: string; hi: string }) {
+  const [supported, setSupported] = useState(false);
+  const [speaking, setSpeaking] = useState<"hi" | "en" | null>(null);
+
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    setSupported(true);
+    window.speechSynthesis.getVoices();
+    return () => window.speechSynthesis.cancel();
+  }, []);
+
+  if (!supported) return null;
+
+  function speak(lang: "hi" | "en") {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    if (speaking === lang) {
+      setSpeaking(null);
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(lang === "hi" ? hi : en);
+    utter.lang = lang === "hi" ? "hi-IN" : "en-IN";
+    const voice = synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang === "hi" ? "hi" : "en-in")) ?? synth.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang));
+    if (voice) utter.voice = voice;
+    utter.rate = 0.9;
+    utter.onend = () => setSpeaking(null);
+    utter.onerror = () => setSpeaking(null);
+    setSpeaking(lang);
+    synth.speak(utter);
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {(["hi", "en"] as const).map((lang) => (
+        <button
+          key={lang}
+          type="button"
+          onClick={() => speak(lang)}
+          aria-pressed={speaking === lang}
+          className={clsx("btn min-h-14 border-2 px-4 text-lg", speaking === lang ? "border-primary-soft bg-primary-soft text-white" : "border-primary-soft/40 bg-surface-low text-primary-soft")}
+        >
+          <Volume2 className="h-6 w-6" aria-hidden />
+          <span lang={lang === "hi" ? "hi" : "en"}>{speaking === lang ? (lang === "hi" ? "रोकें" : "Stop") : lang === "hi" ? "सुनिए" : "Read aloud"}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function PrintButton({ label = "Print" }: { label?: string }) {
   return (
     <button type="button" onClick={() => window.print()} className="btn-outline btn-md print:hidden">
