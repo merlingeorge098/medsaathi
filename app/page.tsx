@@ -76,10 +76,7 @@ export default async function Home() {
           <div aria-hidden="true" className="anim-drift pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary-tint/40 blur-3xl" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 pt-10 sm:px-6 md:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-24">
             <div>
-              <p className="anim-fade-up inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-clay shadow-sm ring-1 ring-clay/15">
-                <span className="h-2 w-2 rounded-full bg-clay-strong" aria-hidden /> Medicine care for elders and their families
-              </p>
-              <h1 className="anim-fade-up delay-1 mt-5 text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl">
+              <h1 className="anim-fade-up text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl">
                 Dawa time pe, <span className="text-primary-soft">parivaar saath mein.</span>
               </h1>
               <p className="anim-fade-up delay-2 mt-5 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
