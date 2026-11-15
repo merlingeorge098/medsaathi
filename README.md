@@ -7,6 +7,10 @@ Built for the PromptWars x Catalyst challenge "Elderly Care & Medication Managem
 - **Live demo:** https://medsaathi-three.vercel.app
 - **Demo family:** Care Code `482915`, elder PIN `1234` (or tap **See Baba's view** / **See Rahul's view** on the home page)
 
+## Chosen vertical
+
+**Elderly Care & Medication Management Platform.** The persona is an elderly parent in India (our demo: Baba, 76, on four daily medicines) and the family and caretakers around him. The logic is built around one rule: the family can help, but the elder decides.
+
 ## The idea
 
 Most reminder apps treat the elderly person as someone to be managed. MedSaathi keeps them in charge:
@@ -97,6 +101,17 @@ tests/             Vitest unit tests
 - **Speak their language.** Elders with low vision or limited reading can hear each dose in Hindi or English, using the phone's built-in voice (no extra service or key).
 - **Meet families where they are.** Indian families coordinate on WhatsApp, so the daily summary is one tap away.
 - **IST everywhere.** Servers run on UTC; all schedule maths goes through `lib/time.ts`.
+
+## Assumptions
+
+- **One elder per care circle.** Each profile is one elderly person; family members, caretakers and nurses join it with the Care Code and a personal passcode.
+- **Indian Standard Time.** Every schedule, reminder and report is calculated in IST (Asia/Kolkata), even though servers run on UTC.
+- **Doctor's shorthand.** `1-0-1` means morning, afternoon, night, mapped to default dose times for that slot and the before/after-food rule.
+- **Email is the alert channel.** Family members have an email address; reminders go through Gmail. There is no SMS or push notification in this version.
+- **A scheduler runs every 5 minutes.** Reminders are therefore accurate to within about 5 minutes, and doses older than 6 hours are never emailed about.
+- **The elder has a phone or tablet with a browser.** Read-aloud uses the device's built-in voice; Hindi speech needs a Hindi voice on the device (standard on Android).
+- **Not a medical device.** MedSaathi organises the doctor's instructions. It does not give medical advice or check drug interactions, and prescription photo reading is an aid for the family to review.
+- **Demo data is fictional.** Baba's family and history are generated sample data.
 
 ## Run locally
 
