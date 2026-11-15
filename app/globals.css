@@ -22,6 +22,22 @@
   .eyebrow { @apply text-xs font-bold uppercase tracking-wider text-clay; }
 }
 
+/* Landing page motion: entrance on load, reveal on scroll (where supported), gentle zoom. */
+@keyframes fade-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes slow-zoom { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: scale(1); } }
+@keyframes drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.anim-fade-up { animation: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.anim-zoom { animation: slow-zoom 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.anim-drift { animation: drift 6s ease-in-out infinite; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.22s; }
+.delay-3 { animation-delay: 0.34s; }
+.delay-4 { animation-delay: 0.46s; }
+@supports (animation-timeline: view()) {
+  .reveal { animation: fade-up linear both; animation-timeline: view(); animation-range: entry 0% cover 22%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .reveal, .anim-fade-up, .anim-zoom, .anim-drift { animation: none !important; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
